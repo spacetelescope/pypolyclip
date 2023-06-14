@@ -13,6 +13,7 @@ The [polyclip](http://tir.astro.utoledo.edu/jdsmith/code/idl.php) code employs t
 to clip simple polygons against a tessalated grid of square pixels.  Therefore, this differs from similar packages, which often clip between two arbitrary polygons.  The testing function `test/test_pypolyclip.py` can be envoked to produce the following example figures:
 <img src="docs/_static/polygons.png"  width="350" height="350">
 <img src="docs/_static/quadrilaterals.png"  width="350" height="350">
+
 The first figure shows clipping of polygons with differing numbers of vertices.  Programmatically, this requires explicit for-loops in Python, but if the number of vertices is the same for all polygons (such as the second figure), the `numpy` can be used to improve performance by several percent.  In each figure, the Cartesian coordinates for each pixel that overlaps with a given polygon are labeled with the area of that pixel that is covered (recalling the area of a pixel is defined as 1).  Therefore, the sum of the areas of the individual pixels for each polygon should be the area of the polygon.
 
 ## Example usage
