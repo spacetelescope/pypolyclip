@@ -8,8 +8,8 @@ authors:
     given-names: "Russell"
     orcid: "https://orcid.org/0000-0003-0894-1588"
   - family-names: "Smith"
-    given-names: "JD"
-    orcid: 
+    given-names: "John-David"
+    orcid: "https://orcid.org/0000-0003-1545-5078"
 title: "pypolyclip"
 version: 1.0.0
 doi:
