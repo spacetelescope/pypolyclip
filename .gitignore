@@ -10,3 +10,4 @@ dist/
 *.so
 pip-wheel-metadata/
 .tmp/
+env*/

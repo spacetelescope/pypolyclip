@@ -1,2 +1,17 @@
+[project]
+name = "pypolyclip"
+description = "A python driver for polyclip written in C by JD Smith."
+dynamic = [
+    "version"
+]
+
 [build-system]
 requires = ["setuptools", "wheel", "numpy"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-astropy",
+    "pytest-tornasync",
+    "matplotlib"
+]
