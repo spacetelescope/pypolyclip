@@ -1,6 +1,6 @@
 [project]
 name = "pypolyclip"
-description = "A python driver for polyclip written in C by JD Smith."
+description = "A python driver to the polyclip functions"
 dynamic = [
     "version"
 ]

@@ -11,3 +11,7 @@ dist/
 pip-wheel-metadata/
 .tmp/
 env*/
+
+# Other generated files
+*/version.py
+*/cython_version.py
