@@ -1,3 +1,6 @@
-from ._version import version as __version__
+try:
+    from ._version import version as __version__
+except ImportError:
+    __version__ = ''
 
-from .pypolyclip import multi,single
+from .pypolyclip import multi, single

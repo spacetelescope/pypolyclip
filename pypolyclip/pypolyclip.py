@@ -139,7 +139,7 @@ def single(x, y, nxy):
         The y coordinates of the polygon corners
 
     nxy : list, tuple, or `np.ndarray`
-        The size of the pixel grid.
+           The size of the pixel grid.
 
     Returns
     -------
