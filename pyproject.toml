@@ -1,20 +1,5 @@
-[project]
-name = "pypolyclip"
-description = "A python driver to the polyclip functions"
-dynamic = [
-    "version"
-]
-
 [build-system]
-requires = ["setuptools", 
+requires = ["setuptools",
             "setuptools_scm>=6.2",
             "oldest-supported-numpy"]
 build-backend = "setuptools.build_meta"
-
-[project.optional-dependencies]
-test = [
-    "pytest",
-    "pytest-astropy",
-    "pytest-tornasync",
-    "matplotlib"
-]
