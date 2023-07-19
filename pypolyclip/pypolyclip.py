@@ -58,10 +58,10 @@ def multi(x, y, nxy):
         # if here, then the inputs are numpy arrays, and so the polygons
         # all have the same number of vertices.  Therefore, we can use
         # numpy operations to do many calculations
-        l = np.clip(np.floor(np.amin(x, axis=1)), 0, nxy[0]).astype(INT)
-        r = np.clip(np.floor(np.amax(x, axis=1)), 0, nxy[0]).astype(INT)
-        b = np.clip(np.floor(np.amin(y, axis=1)), 0, nxy[1]).astype(INT)
-        t = np.clip(np.floor(np.amax(y, axis=1)), 0, nxy[1]).astype(INT)
+        l = np.clip(np.floor(np.amin(x, axis=1)), 0, nxy[0]).astype(INT)  # noqa
+        r = np.clip(np.floor(np.amax(x, axis=1)), 0, nxy[0]).astype(INT)  # noqa
+        b = np.clip(np.floor(np.amin(y, axis=1)), 0, nxy[1]).astype(INT)  # noqa
+        t = np.clip(np.floor(np.amax(y, axis=1)), 0, nxy[1]).astype(INT)  # noqa
 
         # make some polygon indices
         npoly = x.shape[0]
@@ -72,10 +72,10 @@ def multi(x, y, nxy):
         # quadrilateral).  Therefore, we must explicitly loop over the
         # polygons --- which is more costly, but more general.
         npoly = len(x)
-        l = np.empty(npoly, dtype=INT)
-        r = np.empty(npoly, dtype=INT)
-        b = np.empty(npoly, dtype=INT)
-        t = np.empty(npoly, dtype=INT)
+        l = np.empty(npoly, dtype=INT)  # noqa
+        r = np.empty(npoly, dtype=INT)  # noqa
+        b = np.empty(npoly, dtype=INT)  # noqa
+        t = np.empty(npoly, dtype=INT)  # noqa
         indices = np.empty(npoly + 1, dtype=INT)
         indices[0] = 0
         for i, (_x, _y) in enumerate(zip(x, y)):
@@ -164,10 +164,10 @@ def single(x, y, nxy):
     """
 
     # compute bounding box for the pixel
-    l = np.asarray(np.clip(np.floor(np.amin(x)), 0, nxy[0]), dtype=INT)
-    r = np.asarray(np.clip(np.floor(np.amax(x)), 0, nxy[0]), dtype=INT)
-    b = np.asarray(np.clip(np.floor(np.amin(y)), 0, nxy[1]), dtype=INT)
-    t = np.asarray(np.clip(np.floor(np.amax(y)), 0, nxy[1]), dtype=INT)
+    l = np.asarray(np.clip(np.floor(np.amin(x)), 0, nxy[0]), dtype=INT)  # noqa
+    r = np.asarray(np.clip(np.floor(np.amax(x)), 0, nxy[0]), dtype=INT)  # noqa
+    b = np.asarray(np.clip(np.floor(np.amin(y)), 0, nxy[1]), dtype=INT)  # noqa
+    t = np.asarray(np.clip(np.floor(np.amax(y)), 0, nxy[1]), dtype=INT)  # noqa
 
     # get number of vertices for the polygon.  The C-code is expecting
     # this to be an array

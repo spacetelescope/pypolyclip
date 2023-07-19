@@ -3,4 +3,4 @@ try:
 except ImportError:
     __version__ = ''
 
-from .pypolyclip import multi, single
+from .pypolyclip import multi, single  # noqa: F401
