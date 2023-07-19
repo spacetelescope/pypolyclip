@@ -24,10 +24,6 @@ jobs:
           python: 3.11
           toxenv: py311-test
           toxposargs: --run-slow
-        - name: linkcheck
-          os: ubuntu-latest
-          python: 3.11
-          toxenv: py311-linkcheck
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
