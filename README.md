@@ -48,7 +48,7 @@ xc, yc, area, slices = pypolyclip.multi(px, py, naxis)
 
 # use these things like
 for i, s in enumerate(slices):
-	print(f'total area for polygon {i}={np.sum(areas[s])}')
+	print(f'total area for polygon {i}={np.sum(area[s])}')
 
 ```
 
@@ -83,7 +83,7 @@ xc, yc, area, slices = pypolyclip.multi(px, py, naxis)
 
 # use these things like
 for i, s in enumerate(slices):
-	print(f'total area for polygon {i}={np.sum(areas[s])}')
+	print(f'total area for polygon {i}={np.sum(area[s])}')
 
 ```
 
