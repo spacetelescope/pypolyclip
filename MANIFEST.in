@@ -1,0 +1,9 @@
+include README.md
+include CHANGES.rst
+include LICENSE
+include pyproject.toml
+
+prune build
+prune docs
+
+global-exclude *.pyc *.o
