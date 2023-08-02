@@ -3,3 +3,6 @@ requires = ["setuptools",
             "setuptools_scm>=6.2",
             "oldest-supported-numpy"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "pypolyclip/version.py"
