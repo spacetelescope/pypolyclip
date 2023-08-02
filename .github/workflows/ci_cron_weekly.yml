@@ -11,19 +11,19 @@ permissions:
   contents: read
 
 jobs:
-
   ci_cron_tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     if: github.repository == 'spacetelescope/pypolyclip'
-    matrix:
-      include:
-        # NOTE: we don't have devdeps here
-        - name: Python 3.11
-          os: ubuntu-latest
-          python: 3.11
-          toxenv: py311-test
-          toxposargs: --run-slow
+    strategy:
+      matrix:
+        include:
+          # NOTE: we don't have devdeps here
+          - name: Python 3.11
+            os: ubuntu-latest
+            python: 3.11
+            toxenv: py311-test
+            toxposargs: --run-slow
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
