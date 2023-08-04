@@ -89,5 +89,5 @@ jobs:
       if: "contains(matrix.toxenv, '-cov')"
       uses: codecov/codecov-action@v3
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml,.c_coverage.html
         verbose: true
