@@ -49,6 +49,12 @@ jobs:
             toxposargs: --remote-data=any
             allow_failure: false
 
+          - name: (Allowed failure) Python 3.11 with devdeps (linux)
+            os: ubuntu-latest
+            python: '3.11'
+            toxenv: 'py311-test-devdeps'
+            allow_failure: true
+
           - name: Python 3.11 (macos)
             os: macos-latest
             python: '3.11'
