@@ -1,7 +1,7 @@
-/* 
+/*
 NAME:
 
-  POLYCLIP 
+  POLYCLIP
 
 DESCRIPTION:
 
@@ -11,9 +11,9 @@ DESCRIPTION:
   along with the clipped polygon areas.  Uses REVERSE_INDICES-like
   vectors (see HISTOGRAM) to permit decoding the return vectors into
   individual polygons clipped for each pixel.  Much faster (~50x) than
-  the IDL-loop version polyclip.pro.  
+  the IDL-loop version polyclip.pro.
 
-REFERENCE: 
+REFERENCE:
 
 Sutherland, I, and Hodgman, G, "Reentrant Polygon Clipping", Graphics
   and Image Processing, Vol 17, p32, Jan, 1974
@@ -34,7 +34,7 @@ CALLING SEQUENCE:
                           nclip_poly, $       ; OUT: final number clipped polys
                           areas, $            ; OUT: output areas
                           px_out,py_out,ri_out) ; OUT: clipped poly verts
-        
+
      or, for multiple polygons at once:
 
         tmp=call_external(polyclip_path,'polyclip_multi',$
@@ -52,7 +52,7 @@ CALLING SEQUENCE:
                           nclip_poly, $       ; OUT: final number clipped polys
                           areas)              ; OUT: output areas
 
-INPUTS: 
+INPUTS:
 
   left,right,bottom,top: The bounding-box range of pixel coordinates
     to clip against.  For multiple input polygons, these bounding
@@ -81,7 +81,7 @@ OUTPUTS:
   inds: a 2xn array giving the X,Y coordinates of pixels corresponding
     to output polygons and areas.  Indexed by poly_inds for the
     multiple case.
-  
+
   nclip_poly: The total number of resulting clipped polygons.
 
   areas: The output areas of each polygon, must be pre-initialized as
@@ -100,7 +100,7 @@ OUTPUTS:
     vectors corresponding to that pixel's clipped polygon coordinates.
 
   == POLYCLIP_MULTIPLE only:
-  
+
   poly_inds: On output, in contains the reverse index vector for inds
     and areas, such that poly_inds[i]:poly_inds[i+1]-1 contains the
     indices into these vectors corresponding to input polygon i.  The
@@ -134,12 +134,12 @@ EXAMPLE:
 		    0b, $
 		    0b,0b,0b], $
 		    left,right,bottom,top, $
-		    px,py,nverts, $         
+		    px,py,nverts, $
 		    inds, $                  ; OUT: x,y inds within array
 		    nclip_poly, $       ; OUT: final number clipped polys
 		    areas, $            ; OUT: output areas
 		    px_out,py_out,ri_out) x_out
-		    
+
 #############################################################################
  LICENSE
 
@@ -149,12 +149,12 @@ EXAMPLE:
   it under the terms of the GNU General Public License as published
   by the Free Software Foundation; either version 2, or (at your
   option) any later version.
-  
+
   This file is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this file; see the file COPYING.  If not, write to the
   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -165,7 +165,7 @@ EXAMPLE:
 #include <stdlib.h>
 #include <stdio.h>
 #include "polyclip.h"     /* Added by R RYAN */
-  
+
 /* COMMENTED OUT AND MOVED TO A NEW FILE: `include/polyclip.h` BY R RYAN
 int  polyclip(float *,float *, int, int, int, float *, float *);
 void  polyclip_shclip(float, float, int, int, int);
@@ -176,7 +176,7 @@ float polyclip_area(float *px,float *py, int n);
 char polyclip_test();
 */
 
-  
+
 /* Return a unique version number to test compilation success */
 char polyclip_test(void) {
   return 44;
@@ -185,10 +185,10 @@ char polyclip_test(void) {
 /* Clip a single polygon, with polygon output */
 /*void polyclip_single(int argc,void * argv[]) {*/
 void polyclip_single(int l,int r,int b,int t,float *px,float *py,int nverts,int *inds,int *nclip_poly,float *areas,float *px_out,float *py_out,int *ri_out){
-		
+
   //int i,j,l,r,b,t,nverts,nv_clip,indx;
   //float *px,*py,*px_out,*py_out,*areas,area;
-  //int *inds,*nclip_poly,*ri_out;  
+  //int *inds,*nclip_poly,*ri_out;
   /* Input */
   //l=(int)argv[0]; r=(int)argv[1]; b=(int)argv[2]; t=(int)argv[3];
   //px=(float *)argv[4]; py=(float *)argv[5]; nverts=(int)argv[6];
@@ -199,8 +199,8 @@ void polyclip_single(int l,int r,int b,int t,float *px,float *py,int nverts,int 
 
   int i,j,indx,nv_clip;
   float area;
-  
-  
+
+
   ri_out[0]=0;
   for(indx=0,i=l;i<=r;i++) {
     for(j=b;j<=t;j++) {
@@ -213,7 +213,7 @@ void polyclip_single(int l,int r,int b,int t,float *px,float *py,int nverts,int 
 	px_out+=nv_clip; py_out+=nv_clip; /* Offset for next output poly */
 	inds[2*indx]=i; inds[2*indx+1]=j;
 	indx++;
-      } 
+      }
     }
   }
 }
@@ -236,12 +236,12 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
 
   /* Input */
   //  l=(int *)argv[0]; r=(int *)argv[1]; b=(int *)argv[2]; t=(int *)argv[3];
-  //  px=(float *)argv[4]; py=(float *)argv[5]; 
+  //  px=(float *)argv[4]; py=(float *)argv[5];
   //  n_poly=(int)argv[6];
   //  poly_inds=(unsigned int *)argv[7]; /* poly_inds Input/Output */
 
   /* Output */
-  //inds=(int *)argv[8]; 
+  //inds=(int *)argv[8];
   //  xx=(int*)argv[8];
   //  yy=(int*)argv[9];
 
@@ -259,8 +259,8 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
   px_out=(float *)malloc((nv_max)*sizeof(float));
   py_out=(float *)malloc((nv_max)*sizeof(float));
 
-  
-  
+
+
   /* Clip each polygon and accumulate results */
   for(indx=0,prev_pind=0,k=0;k<n_poly;k++) {
     nverts=poly_inds[k+1]-prev_pind;
@@ -268,16 +268,16 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
     for(i=l[k];i<=r[k];i++) {
       for(j=b[k];j<=t[k];j++) {
 	if((nv_clip=polyclip(px,py,nverts,i,j,px_out,py_out))) {
-	  
+
 	  area=polyclip_area(px_out,py_out,nv_clip);
 	  /*
 	  for(int rr=0;rr<nv_clip;rr++) printf("%f %f\n",px_out[rr],py_out[rr]);
 	  printf("area: %f\n",area);
 	  printf("\n\n\n");*/
 	  if (area==0.0) continue; /* Discard degenerates */
-	  areas[indx]=area;	
+	  areas[indx]=area;
 	  this_nclip_poly++;
-	  //	  inds[2*indx]=i; 
+	  //	  inds[2*indx]=i;
 	  //inds[2*indx+1]=j;
 	  xx[indx]=i;
 	  yy[indx]=j;
@@ -310,7 +310,7 @@ float *px_clip,*py_clip; /* pointers for depositing output vertices */
 float F[4][2],S[4][2],I[2];	/* Last point X, Y in poly */
 int pind;			/* Counter for accumulating output */
 
-int polyclip(float *px, float *py, int n, int i, int j, 
+int polyclip(float *px, float *py, int n, int i, int j,
 	     float *px_out, float *py_out) {
   int l;
   pind=0; px_clip=px_out; py_clip=py_out;
@@ -320,7 +320,7 @@ int polyclip(float *px, float *py, int n, int i, int j,
 #endif
 
   for(l=0;l<4;l++) first[l]=1;
-  for(l=0;l<n;l++) 
+  for(l=0;l<n;l++)
     polyclip_shclip(px[l],py[l],i,j,LEFT);
   polyclip_shclose(i,j,LEFT);	/* close first->last */
   return pind;
@@ -332,7 +332,7 @@ void polyclip_shclip(float px, float py, int i, int j, int side) {
   int in_p;
 
 #ifdef DEBUG
-  if (side < DONE) 
+  if (side < DONE)
     printf("=== Clipping (%4.2f,%4.2f) pixel %d %d %s\n",px,py,i,j,
 	   (side==LEFT)?"LEFT":((side==RIGHT)?"RIGHT":
 				((side==TOP)?"TOP":"BOTTOM")));
@@ -346,7 +346,7 @@ void polyclip_shclip(float px, float py, int i, int j, int side) {
 
     return;
   }
-  
+
   in_p=polyclip_inside(px,py,i,j,side);
 
   if(first[side]) {
@@ -361,15 +361,15 @@ void polyclip_shclip(float px, float py, int i, int j, int side) {
 #endif
     polyclip_shclip(I[0],I[1],i,j,side+1); /* Pass this point to the next */
   }
-    
+
   S[side][0]=px; S[side][1]=py;  /* P -> S */
   in_last[side]=in_p;		 /* Save last inside flag */
-  if(in_p) polyclip_shclip(px,py,i,j,side+1); 
+  if(in_p) polyclip_shclip(px,py,i,j,side+1);
 }
 
 void polyclip_shclose(int i, int j, int side) {
 #ifdef DEBUG
-  if(side<DONE) 
+  if(side<DONE)
     printf("Closing pixel %d %d (inlast: %d, F: %7.4f, %7.4f, first: %d) %s\n",
 	   i,j,in_last[side],F[side][0],F[side][1],first[side],
 	   (side==LEFT)?"LEFT":((side==RIGHT)?"RIGHT":
@@ -379,12 +379,12 @@ void polyclip_shclose(int i, int j, int side) {
     if(!first[side]) {
       if(in_last[side]^polyclip_inside(F[side][0],F[side][1],i,j,side)) {
 	polyclip_intersect(F[side][0],F[side][1],i,j,side);
-	
+
 #ifdef DEBUG
 	printf("Intersec (%4.2f,%4.2f) -> (%4.2f,%4.2f) => (%4.2f,%4.2f) last %s\n",
 	       S[side][0],S[side][1],F[side][0],F[side][1],I[0],I[1],in_last[side]?"in":"out");
 #endif
-	
+
 	polyclip_shclip(I[0],I[1],i,j,side+1);
       }
       first[side]=1;
@@ -392,32 +392,32 @@ void polyclip_shclose(int i, int j, int side) {
     polyclip_shclose(i,j,side+1);
   }
 }
-      
+
 int polyclip_inside(float px, float py, int i, int j, int side) {
   switch(side) { 		/* See if inside the edge */
-  case LEFT: 
+  case LEFT:
     return (px>=i);
-  case RIGHT: 
+  case RIGHT:
     return (px<=i+1);
-  case TOP: 
+  case TOP:
     return (py<=j+1);
-  case BOTTOM: 
+  case BOTTOM:
     return (py>=j);
   }
   return -1;
 }
 
-void polyclip_intersect(float px, float py,int i, int j, int side) { 
+void polyclip_intersect(float px, float py,int i, int j, int side) {
   switch(side) {
   case LEFT:
     I[0]=i;
     I[1]=S[side][1]+(py-S[side][1])/(px-S[side][0])*(i-S[side][0]);
     break;
-  case RIGHT: 
+  case RIGHT:
     I[0]=i+1;
     I[1]=S[side][1]+(py-S[side][1])/(px-S[side][0])*(i+1-S[side][0]);
     break;
-  case TOP: 
+  case TOP:
     I[0]=S[side][0]+(px-S[side][0])/(py-S[side][1])*(j+1-S[side][1]);
     I[1]=j+1;
     break;
