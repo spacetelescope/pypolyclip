@@ -1,8 +1,8 @@
-import pypolyclip
-import numpy as np
-
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.patches import Polygon
+
+import pypolyclip
 
 
 def test_multi_numpy(plot=False):

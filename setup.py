@@ -4,7 +4,6 @@ from glob import glob
 import numpy as np
 from setuptools import Extension, setup
 
-
 path = ('pypolyclip',)
 ext = Extension('.'.join(path) + '.polyclip',
                 glob(os.path.join(*path, 'src', '*.c')),
