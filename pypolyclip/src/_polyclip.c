@@ -6,8 +6,8 @@
 
 
 
-/* 
-NAME: 
+/*
+NAME:
   _POLYCLIP
 
 DESCRIPTION:
@@ -27,16 +27,16 @@ AUTHOR:
 static PyObject *_multi(PyObject *self,PyObject *args){
   /* Function to link to the polyclip_multi function */
 
-  
+
 
   /* Create objects from the inputs */
   PyObject *lobj,*robj,*bobj,*tobj,*pxobj,*pyobj;
   PyObject *n_polyobj,*poly_indsobj,*xxobj,*yyobj,*nclip_polyobj,*areasobj;
   if (!PyArg_ParseTuple(args, "OOOOOOOOOOOO",&lobj,&robj,&bobj,&tobj,&pxobj,&pyobj,&n_polyobj,&poly_indsobj,&xxobj,&yyobj,&nclip_polyobj,&areasobj)){
     return NULL;
-  } 
+  }
 
-  
+
   /* if arrays, then extract them to objects */
   PyObject *larr=PyArray_FROM_OTF(lobj,NPY_INT32,NPY_ARRAY_IN_ARRAY);
   PyObject *rarr=PyArray_FROM_OTF(robj,NPY_INT32,NPY_ARRAY_IN_ARRAY);
@@ -64,7 +64,7 @@ static PyObject *_multi(PyObject *self,PyObject *args){
   int *yy = (int*)PyArray_DATA((PyArrayObject*)yyarr);
   int *nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
   float *areas = (float*)PyArray_DATA((PyArrayObject*)areasarr);
-  
+
   /* clean up memory */
   Py_DECREF(larr);
   Py_DECREF(rarr);
@@ -78,16 +78,16 @@ static PyObject *_multi(PyObject *self,PyObject *args){
   Py_DECREF(yyarr);
   Py_DECREF(nclip_polyarr);
   Py_DECREF(areasarr);
-  
+
   /* call function */
   int n=n_poly[0];
   polyclip_multi(l,r,b,t,px,py,n,poly_inds,xx,yy,nclip_poly,areas);
-  
+
   //printf("C: %f %f\n",px[0],xx[0]);
-  
+
 
   n_poly[0]=n;
-  
+
   /* Do something interesting here. */
   Py_RETURN_NONE;
 }
@@ -105,8 +105,8 @@ static PyObject *_single(PyObject *self,PyObject *args){
     return NULL;
   }
 
-  
-  
+
+
   /* if arrays, then extract them to objects */
   PyObject *larr=PyArray_FROM_OTF(lobj,NPY_INT32,NPY_ARRAY_IN_ARRAY);
   PyObject *rarr=PyArray_FROM_OTF(robj,NPY_INT32,NPY_ARRAY_IN_ARRAY);
@@ -123,7 +123,7 @@ static PyObject *_single(PyObject *self,PyObject *args){
   PyObject *ri_outarr=PyArray_FROM_OTF(ri_outobj,NPY_INT32,NPY_ARRAY_IN_ARRAY);
 
 
-  
+
   /* extract the array data to a C variable */
   int *l = (int*)PyArray_DATA((PyArrayObject*)larr);
   int *r = (int*)PyArray_DATA((PyArrayObject*)rarr);
@@ -139,13 +139,13 @@ static PyObject *_single(PyObject *self,PyObject *args){
   int *nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
   int *ri_out = (int*)PyArray_DATA((PyArrayObject*)ri_outarr);
 
-  
+
   /* clean up memory */
   Py_DECREF(larr);
   Py_DECREF(rarr);
   Py_DECREF(tarr);
   Py_DECREF(barr);
-  Py_DECREF(nvertsarr);	
+  Py_DECREF(nvertsarr);
   Py_DECREF(pxarr);
   Py_DECREF(pyarr);
   Py_DECREF(px_outarr);
@@ -157,12 +157,12 @@ static PyObject *_single(PyObject *self,PyObject *args){
 
 
   //printf("%i %i %i %i %i\n",l[0],r[0],t[0],b[0],nverts[0]);
-  
+
   /* call function */
   int n=nclip_poly[0];
   polyclip_single(l[0],r[0],b[0],t[0],px,py,nverts[0],inds,&n,areas,px_out,py_out,ri_out);
   nclip_poly[0]=n;
-  
+
   /* Do something interesting here. */
   Py_RETURN_NONE;
 }
@@ -171,7 +171,7 @@ static PyObject *_single(PyObject *self,PyObject *args){
 
 
 /* Collection of function names */
-static PyMethodDef module_methods[]={		     				     
+static PyMethodDef module_methods[]={
   { "multi", (PyCFunction)_multi, METH_NOARGS,NULL },
   { "multi", _multi, METH_VARARGS, "A python driver to call polyclip_multi.\nA function written by J.D. Smith\n"},
   { "single", (PyCFunction)_single, METH_NOARGS,NULL },
@@ -186,7 +186,7 @@ static struct PyModuleDef _polyclip =
     PyModuleDef_HEAD_INIT,
     "polyclip", /* name of module */
     NULL,
-    -1, 
+    -1,
     module_methods
 };
 
@@ -197,8 +197,3 @@ PyMODINIT_FUNC PyInit_polyclip(void)
   import_array();
   return PyModule_Create(&_polyclip);
 }
-
-
-
-
-

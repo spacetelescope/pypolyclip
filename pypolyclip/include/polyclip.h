@@ -1,11 +1,11 @@
-/* 
+/*
 
      C header file to employ JD Smith's polygon clipping code.
 
-     This header file was written by Russell Ryan.  
+     This header file was written by Russell Ryan.
 
-     This file moves the function definitions from the `polyclip.c` file 
-     into this header file to facilitate linking to python.  The 
+     This file moves the function definitions from the `polyclip.c` file
+     into this header file to facilitate linking to python.  The
      function definitions are not changed.
 
      Version 1: May 7, 2019
@@ -26,4 +26,3 @@ void polyclip_multi(int*,int*,int*,int*,float*,float*,int,int*,int*,int*,int*,fl
 void polyclip_single(int,int,int,int,float*,float*,int,int*,int*,float*,float*,float*,int*);
 
 #endif
-
