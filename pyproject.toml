@@ -64,6 +64,7 @@ xfail_strict = true
 remote_data_strict = true
 filterwarnings = [
     'error',
+    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
 ]
 
 [tool.coverage.run]
