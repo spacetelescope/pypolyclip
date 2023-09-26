@@ -4,7 +4,7 @@ description = 'A python driver to the polyclip functions'
 readme = 'README.md'
 license = {file = 'LICENSE.rst'}
 authors = [
-    {name = 'Russell Ryan and J.D. Smith', email = 'rryan@stsci.edu'}
+    {name = 'Pypolyclip Developers', email = 'help@stsci.edu'}
 ]
 keywords = [
     'computational geometry',
