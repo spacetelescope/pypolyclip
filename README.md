@@ -1,6 +1,6 @@
 # pypolyclip
 
-[![CI](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_workflows.yml/badge.svg?branch=main)](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_workflows.yml) [![codecov](https://codecov.io/github/spacetelescope/pypolyclip/branch/main/graph/badge.svg?token=8xpNHaI9wD)](https://codecov.io/github/spacetelescope/pypolyclip)
+[![CI Tests](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml/badge.svg?branch=main)](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml) [![coverage](https://codecov.io/github/spacetelescope/pypolyclip/branch/main/graph/badge.svg?token=8xpNHaI9wD)](https://codecov.io/github/spacetelescope/pypolyclip)
 
 A python driver for
 [polyclip](http://tir.astro.utoledo.edu/jdsmith/code/idl.php) written in
