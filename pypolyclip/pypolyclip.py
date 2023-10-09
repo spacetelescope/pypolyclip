@@ -114,7 +114,7 @@ def multi(x, y, nxy):
     return xx, yy, areas, slices
 
 
-def single(x, y, nxy):
+def single(x, y, nxy, return_coordinates=False):
     """
     Function to call the multi-polygon clipping of JD Smith
 
@@ -127,7 +127,7 @@ def single(x, y, nxy):
         The y coordinates of the polygon corners
 
     nxy : list, tuple, or `np.ndarray`
-           The size of the pixel grid.
+        The size of the pixel grid.
 
     Returns
     -------
@@ -174,7 +174,7 @@ def single(x, y, nxy):
     inds = np.empty((npix, 2), dtype=INT)
     ri_out = np.empty(npix + 1, dtype=INT)
 
-    # call the pologyon clipper
+    # call the polygon clipper
     polyclip.single(l, r, b, t,
                     np.asarray(x, dtype=FLT),
                     np.asarray(y, dtype=FLT),
@@ -195,4 +195,16 @@ def single(x, y, nxy):
     # the output for the multi function
     slices = [slice(0, len(xx), 1)]
 
-    return xx, yy, areas, slices
+    if return_coordinates:
+        px = []
+        py = []
+        pmax = ri_out[nclip]
+        pind = ri_out[:pmax]
+        for i in range(len(pind)-1):
+            s = slice(pind[i], pind[i+1], 1)
+            px.append(px_out[s])
+            py.append(py_out[s])
+
+        return xx, yy, areas, slices, px, py
+    else:
+        return xx, yy, areas, slices
