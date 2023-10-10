@@ -114,9 +114,9 @@ def multi(x, y, nxy):
     return xx, yy, areas, slices
 
 
-def single(x, y, nxy, return_coordinates=False):
+def single(x, y, nxy, return_polygons=False):
     """
-    Function to call the multi-polygon clipping of JD Smith
+    Function to call the single-polygon clipping of JD Smith
 
     Parameters
     ----------
@@ -128,6 +128,11 @@ def single(x, y, nxy, return_coordinates=False):
 
     nxy : list, tuple, or `np.ndarray`
         The size of the pixel grid.
+
+    return_polygons : bool, optional
+        If `True`, then will return the ``px`` and ``py`` variables
+        that describe the coordinates of the clipped polygons.
+        Default = False
 
     Returns
     -------
@@ -144,6 +149,16 @@ def single(x, y, nxy, return_coordinates=False):
         a slice object that will map between the input and output
         coordinates. This is *ONLY* returned for consistency between
         the companion function `multi()`.
+
+    px : list
+        The x-pixel coordinates of the clipped polygons. Each element of
+        the list contains a `np.array` of dtype=float that represents
+        the polygon vertices. Only returned if return_polygons=True.
+
+    py : list
+        The y-pixel coordinates of the clipped polygons. Each element of
+        the list contains a `np.array` of dtype=float that represents
+        the polygon vertices. Only returned if return_polygons=True.
 
     Notes
     -----
@@ -195,13 +210,14 @@ def single(x, y, nxy, return_coordinates=False):
     # the output for the multi function
     slices = [slice(0, len(xx), 1)]
 
-    if return_coordinates:
+    if return_polygons:
         px = []
         py = []
         pmax = ri_out[nclip]
         pind = ri_out[:pmax]
-        for i in range(len(pind)-1):
-            s = slice(pind[i], pind[i+1], 1)
+        for i in range(len(pind) - 1):
+            s = slice(pind[i], pind[i + 1], 1)
+
             px.append(px_out[s])
             py.append(py_out[s])
 

@@ -241,6 +241,36 @@ def test_single(plot=False):
         _plot(px[np.newaxis, ...], py[np.newaxis, ...], xc, yc, area, slices)
 
 
+def test_single_outpolygons():
+    """A module to test clipping a single polygon with output polygons."""
+
+    # define the size of the pixel grid
+    naxis = np.array((100, 100), dtype=int)
+
+    # input polygon
+    px = np.array([4.97274847, 4.54881306, 5.22725153, 5.65118694, 4.97274847])
+    py = np.array([3.64881306, 4.32725153, 4.75118694, 4.07274847, 3.64881306])
+
+    # expected output polygons' indices
+    xe = [np.array([4.9727483, 4.753302, 5., 5., 4.9727483]),
+          np.array([4.753302, 4.548813, 5., 5.]),
+          np.array([5.534765, 5., 5.]),
+          np.array([5., 5.2272515, 5.651187, 5.534765, 5.])]
+
+    ye = [np.array([3.648813, 4., 4., 3.6658418, 3.648813]),
+          np.array([4., 4.3272514, 4.6091843, 4.]),
+          np.array([4., 3.6658418, 4.]),
+          np.array([4.6091843, 4.751187, 4.0727487, 4., 4.])]
+
+    # call the clipping, but return the out indices
+    _, _, _, _, xout, yout = pypolyclip.single(px, py, naxis,
+                                               return_polygons=True)
+
+    # require equality between expected and outputs
+    assert all(np.allclose(x1, x2) for x1, x2 in zip(xout, xe))
+    assert all(np.allclose(y1, y2) for y1, y2 in zip(yout, ye))
+
+
 def _area(px, py, axis=None):
     """
     Implement the shoelace formula for area of a simple polygon
