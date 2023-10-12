@@ -9,47 +9,63 @@ FLT = np.float32
 
 def clip_multi(x, y, nxy):
     """
-    Function to call the multi-polygon clipping of JD Smith
+    Clip multiple polygons against a tessellated grid of square pixels.
 
     Parameters
     ----------
-    x : `np.ndarray` or list of lists
-        The x coordinates of the polygon corners (dtype of int or float)
+    x : 2D array-like of float
+        The x coordinates of the polygon corners as a 2D array. Each row
+        represents a separate polygon.
 
-    y : `np.ndarray` or list of lists
-        The y coordinates of the polygon corners (dtype of int or float)
+    y : 2D array-like of float
+        The y coordinates of the polygon corners as a 2D array. Each row
+        represents a separate polygon.
 
-    nxy : list, tuple, or `np.ndarray`
+    nxy : list, tuple, or `np.ndarray` of 2 int
         The size of the pixel grid.
 
     Returns
     -------
-    xx : `np.ndarray`
-        The x-pixel coordinates that have area (will be `int` dtype)
+    xx : 2D `np.ndarray` of int
+        The x-pixel indices that have overlapping area. Each row
+        represents a separate polygon
 
-    yy : `np.ndarray`
-        The y-pixel coordinates that have area (will be `int` dtype)
+    yy : 2D `np.ndarray` of int
+        The y-pixel indices that have overlapping area. Each row
+        represents a separate polygon.
 
-    areas : `np.ndarray`
-        The area projected onto a given pixel (will be `float` dtype)
+    areas : 1D `np.ndarray` of float
+        The overlapping area on a given pixel.
 
-    slices : list
-        a list of slice objects that will map between the input and
-        output coordinates.
+    slices : list of slice objects
+        A list of slice objects that maps between the input and output
+        coordinates. The length of the list is equal to the number of
+        input polygons.
 
     Notes
     -----
-    1) This is a Python driver to call JD Smith's polyclip.c code.
-    2) Definitionally, there will be an equal number of elements to the
-       output arrays xx, yy, and areas.  However, slices will have the
-       same length as the number of input polygons, which is in general,
-       different than the number of elements of xx (or yy or areas).
-    3) If x/y are passed as a list or tuple, then they are assumed to a
-       list of polygons, which can have an arbitrary number of vertices.
-       If x/y are passed as a np.arrays, then it is assumed that all of
-       the polygons have the same number of vertices.  In which case,
-       np functions and explicit loops are avoided, so this will be slightly
-       faster (at loss of generality).
+    This is a Python driver to call JD Smith's polyclip.c code.
+
+    This function does not validate that the input polygons are
+    valid. One way to check for valid polygons is to use the `Shapely
+    <https://shapely.readthedocs.io/en/stable/>`_ package::
+
+        >>> from shapely.geometry import Polygon
+        >>> print(Polygon(zip(xv, yv)).is_valid)
+
+    where ``xv`` and ``yv`` are the x and y vertices of a single
+    polygon.
+
+    The ``xx``, ``yy``, and ``areas`` output arrays will always have the
+    same length. However, ``slices`` will have the same length as the
+    number of input polygons.
+
+    If ``x`` and ``y`` are input as a list or tuple, then they are
+    assumed to be a list of polygons, which can have an arbitrary number
+    of vertices. If ``x`` and ``y`` are input as `~np.array` objects,
+    then it is assumed that all of the polygons have the same number of
+    vertices. In that case, NumPy vectorization can be used to improve
+    performance.
     """
     # must find the bounding boxes for each pixel
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
@@ -102,7 +118,7 @@ def clip_multi(x, y, nxy):
                    np.hstack(y).astype(FLT),
                    npoly, indices, xx, yy, nclip, areas)
 
-    # make the polyinds a python slice objects
+    # create a list of slices objects from returned indices
     slices = [slice(indices[i], indices[i + 1], 1) for i in range(npoly)]
 
     # trim the results
@@ -116,53 +132,66 @@ def clip_multi(x, y, nxy):
 
 def clip_single(x, y, nxy, return_polygons=False):
     """
-    Function to call the single-polygon clipping of JD Smith
+    Clip a single polygon against a tessellated grid of square pixels.
 
     Parameters
     ----------
-    x : int or float
-        The x coordinates of the polygon corners
+    x : 1D array-like of float
+        The x coordinates of the polygon corners.
 
-    y : int or float
-        The y coordinates of the polygon corners
+    y : 1D array-like of float
+        The y coordinates of the polygon corners.
 
-    nxy : list, tuple, or `np.ndarray`
+    nxy : list, tuple, or `np.ndarray` of 2 int
         The size of the pixel grid.
 
     return_polygons : bool, optional
-        If `True`, then will return the ``px`` and ``py`` variables
-        that describe the coordinates of the clipped polygons.
+        If `True`, then the ``px`` and ``py`` arrays that describe the
+        coordinates of the clipped polygons will also be returned.
         Default = False
 
     Returns
     -------
-    xx : `np.ndarray`
-        The x-pixel coordinates that have area (will be `int` dtype)
+    xx : 1D `np.ndarray` of int
+        The x-pixel indices that have overlapping area.
 
-    yy : `np.ndarray`
-        The y-pixel coordinates that have area (will be `int` dtype)
+    yy : 1D `np.ndarray` of int
+        The x-pixel indices that have overlapping area.
 
-    areas : `np.ndarray`
-        The area projected onto a given pixel (will be `float` dtype)
+    areas : 1D `np.ndarray` of float
+        The overlapping area on a given pixel.
 
-    slice : list
-        a slice object that will map between the input and output
-        coordinates. This is *ONLY* returned for consistency between
-        the companion function `multi()`.
+    slices : list of slice objects
+        A list of slice objects that maps between the input and output
+        coordinates.
 
-    px : list
+    px : list of 1D float `np.ndarray`
         The x-pixel coordinates of the clipped polygons. Each element of
-        the list contains a `np.array` of dtype=float that represents
-        the polygon vertices. Only returned if return_polygons=True.
+        the list contains a 1D `np.array` that represents the polygon
+        vertices. Only returned if ``return_polygons=True``.
 
-    py : list
+    py : list of 1D float `np.ndarray`
         The y-pixel coordinates of the clipped polygons. Each element of
-        the list contains a `np.array` of dtype=float that represents
-        the polygon vertices. Only returned if return_polygons=True.
+        the list contains a 1D `np.array` that represents the polygon
+        vertices. Only returned if ``return_polygons=True``.
 
     Notes
     -----
     This is a Python driver to call JD Smith's polyclip.c code.
+
+    This function does not validate that the input polygons are
+    valid. One way to check for valid polygons is to use the `Shapely
+    <https://shapely.readthedocs.io/en/stable/>`_ package::
+
+        >>> from shapely.geometry import Polygon
+        >>> print(Polygon(zip(xv, yv)).is_valid)
+
+    where ``xv`` and ``yv`` are the x and y vertices of a single
+    polygon.
+
+    The ``xx``, ``yy``, and ``areas`` output arrays will always have the
+    same length. However, ``slices`` will have the same length as the
+    number of input polygons.
     """
     # compute bounding box for the pixel
     l = np.asarray(np.clip(np.floor(np.amin(x)), 0, nxy[0]), dtype=INT)  # noqa: E741
@@ -197,17 +226,12 @@ def clip_single(x, y, nxy, return_polygons=False):
 
     # extract data
     nclip = nclip[0]
-    # px_out = px_out[:nclip]
-    # py_out = py_out[:nclip]
-    # ri_out = ri_out[:nclip]
-
-    # main outputs
     xx = inds[:nclip, 0]
     yy = inds[:nclip, 1]
     areas = areas[:nclip]
 
     # return a dummy set of indices, so that this output looks like
-    # the output for the multi function
+    # the output for the clip_multi function
     slices = [slice(0, len(xx), 1)]
 
     if return_polygons:
