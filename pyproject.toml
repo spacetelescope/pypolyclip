@@ -64,7 +64,6 @@ xfail_strict = true
 remote_data_strict = true
 filterwarnings = [
     'error',
-    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
 ]
 
 [tool.coverage.run]
@@ -90,7 +89,7 @@ exclude_lines = [
 
 [tool.isort]
 skip_glob = [
-    'photutils/*__init__.py*',
+    'pypolyclip/*__init__.py*',
 ]
 known_first_party = [
     'pypolyclip',
