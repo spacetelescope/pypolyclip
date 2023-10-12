@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Polygon
 
-import pypolyclip
+from pypolyclip import clip_single, clip_multi
 
 
-def test_multi_numpy(plot=False):
+def test_clip_multi_numpy(plot=False):
     """A module to test clipping multiple polygons in a single pass."""
 
     # define the size of the pixel grid
@@ -43,7 +43,7 @@ def test_multi_numpy(plot=False):
     # xc,yc are the coordinates in the grid
     # area is the relative pixel area in that grid cell
     # slices is a list of slice objects to apply to the xc,yc,area arrays
-    xc, yc, area, slices = pypolyclip.multi(px, py, naxis)
+    xc, yc, area, slices = clip_multi(px, py, naxis)
 
     # compute the total area by summing over all the pixels for each polygon
     A0 = np.asarray([np.sum(area[s]) for s in slices], dtype=float)
@@ -84,7 +84,7 @@ def test_multi_numpy(plot=False):
         _plot(px, py, xc, yc, area, slices, filename="quadrilaterals.png")
 
 
-def test_multi_list(plot=False):
+def test_clip_multi_list(plot=False):
     """A module to test clipping multiple polygons in a single pass."""
 
     # define the size of the pixel grid
@@ -126,7 +126,7 @@ def test_multi_list(plot=False):
     A.append(_area(xx, yy))
 
     # clip against the pixel grid
-    xc, yc, area, slices = pypolyclip.multi(px, py, naxis)
+    xc, yc, area, slices = clip_multi(px, py, naxis)
 
     # compute the total area by summing over all the pixels for each polygon
     A0 = np.asarray([np.sum(area[s]) for s in slices], dtype=float)
@@ -164,7 +164,7 @@ def test_multi_list(plot=False):
         _plot(px, py, xc, yc, area, slices, filename="polygons.png")
 
 
-def test_single(plot=False):
+def test_clip_single(plot=False):
     """A module to test clipping a single polygon."""
 
     # define the size of the pixel grid
@@ -180,7 +180,7 @@ def test_single(plot=False):
                    2.5, 1.0, 1.0, 2.5, 3.5, 2.0, 1.0, 1.0, 2.5, 4.0, 4.0])
 
     # call the clipping
-    xc, yc, area, slices = pypolyclip.single(px, py, naxis)
+    xc, yc, area, slices = clip_single(px, py, naxis)
 
     # these are the expected values
     xc0 = np.array([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -241,7 +241,7 @@ def test_single(plot=False):
         _plot(px[np.newaxis, ...], py[np.newaxis, ...], xc, yc, area, slices)
 
 
-def test_single_outpolygons():
+def test_clip_single_outpolygons():
     """A module to test clipping a single polygon with output polygons."""
 
     # define the size of the pixel grid
@@ -263,8 +263,7 @@ def test_single_outpolygons():
           np.array([4.6091843, 4.751187, 4.0727487, 4., 4.])]
 
     # call the clipping, but return the out indices
-    _, _, _, _, xout, yout = pypolyclip.single(px, py, naxis,
-                                               return_polygons=True)
+    _, _, _, _, xout, yout = clip_single(px, py, naxis, return_polygons=True)
 
     # require equality between expected and outputs
     assert all(np.allclose(x1, x2) for x1, x2 in zip(xout, xe))
@@ -284,7 +283,7 @@ def _area(px, py, axis=None):
        the y-positions of the vertices
 
     axis : int, optional
-       the axis over the indices to sum over.  See `np.sum()` for more info.
+       The axis to sum over.  See `np.sum()` for more info.
        Default is None.
 
     Returns
@@ -482,6 +481,6 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
 
 
 if __name__ == "__main__":
-    test_multi_list(plot=True)
-    test_multi_numpy(plot=True)
-    test_single(plot=True)
+    test_clip_multi_list(plot=True)
+    test_clip_multi_numpy(plot=True)
+    test_clip_single(plot=True)

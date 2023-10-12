@@ -7,7 +7,7 @@ INT = np.int32
 FLT = np.float32
 
 
-def multi(x, y, nxy):
+def clip_multi(x, y, nxy):
     """
     Function to call the multi-polygon clipping of JD Smith
 
@@ -114,7 +114,7 @@ def multi(x, y, nxy):
     return xx, yy, areas, slices
 
 
-def single(x, y, nxy, return_polygons=False):
+def clip_single(x, y, nxy, return_polygons=False):
     """
     Function to call the single-polygon clipping of JD Smith
 
