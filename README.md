@@ -113,5 +113,3 @@ xc, yc, area, slices = clip_multi(px, py, naxis)
 for i, s in enumerate(slices):
     print(f'total area for polygon {i}={np.sum(area[s])}')
 ```
-
-See also `test/test_pypolyclip.py` for examples.
