@@ -64,6 +64,8 @@ xfail_strict = true
 remote_data_strict = true
 filterwarnings = [
     'error',
+    # python 3.12 deprecation in dateutil (called from matplotlib)
+    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
 ]
 
 [tool.coverage.run]
