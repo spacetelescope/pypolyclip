@@ -22,8 +22,9 @@ to clip simple polygons against a tessellated grid of square pixels.
 Therefore, this differs from similar packages, which often clip between
 two arbitrary polygons.
 
-The testing function `test/test_pypolyclip.py` can be invoked to produce
-the following example figures:
+The test module
+[test_pypolyclip.py](https://github.com/spacetelescope/pypolyclip/blob/main/pypolyclip/tests/test_pypolyclip.py) can be run to produce the following
+example figures:
 
 <img src="docs/_static/polygons.png"  width="350" height="350">
 <img src="docs/_static/quadrilaterals.png"  width="350" height="350">
