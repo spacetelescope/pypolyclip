@@ -35,6 +35,12 @@ covered (the area of a pixel is defined as 1). Therefore, the sum of the
 areas of the individual pixels for each polygon should be the total area
 of the polygon.
 
+Pypolyclip uses a coordinate grid where integer pixel coordinates are
+located at the lower-left corner of each pixel, starting from zero. To
+clip polygons on a coordinate grid where integer pixel coordinates are
+located at the center of pixels, one will need to add 0.5 pixel to both
+the x and y vertices of the input polygons.
+
 The first figure shows clipping of polygons with differing numbers of
 vertices, which internally requires the use of "for loops". However, if
 the number of vertices is the same for all polygons (such as the second
