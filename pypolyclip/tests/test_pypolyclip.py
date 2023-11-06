@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Polygon
 
-from pypolyclip import clip_single, clip_multi
+from pypolyclip import clip_multi, clip_single
 
 
 def test_clip_multi_numpy(plot=False):
