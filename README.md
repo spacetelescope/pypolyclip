@@ -1,6 +1,7 @@
 # pypolyclip
 
-[![CI Tests](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml/badge.svg?branch=main)](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml) [![coverage](https://codecov.io/github/spacetelescope/pypolyclip/branch/main/graph/badge.svg?token=8xpNHaI9wD)](https://codecov.io/github/spacetelescope/pypolyclip)
+[![CI Tests](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml/badge.svg?branch=main)](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml) [![coverage](https://codecov.io/github/spacetelescope/pypolyclip/branch/main/graph/badge.svg?token=8xpNHaI9wD)](https://codecov.io/github/spacetelescope/pypolyclip) [![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.10076768.svg)](https://doi.org/10.5281/zenodo.10076768)
+
 
 A Python package to clip polygons against a pixel grid.
 
