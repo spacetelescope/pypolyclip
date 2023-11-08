@@ -1,6 +1,6 @@
 import numpy as np
 
-from . import polyclip
+from pypolyclip import polyclip
 
 # NEVER CHANGE THESE WITHOUT ADDRESSING DATATYPES INSIDE THE C CODE
 INT = np.int32
