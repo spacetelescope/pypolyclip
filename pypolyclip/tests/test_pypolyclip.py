@@ -74,14 +74,14 @@ def test_clip_multi_numpy(plot=False):
     for i, s in enumerate(slices):
         lam[s] = i
     # apply assertion tests
-    assert np.allclose(xc, xc0), "X-positions are not equal"
-    assert np.allclose(yc, yc0), "Y-positions are not equal"
-    assert np.allclose(area, area0), "Areas are not equal"
-    assert slices == slices0, "Slices are not equal"
-    assert np.allclose(A, A0), "Sum of areas are not equal"
+    assert np.allclose(xc, xc0), 'X-positions are not equal'
+    assert np.allclose(yc, yc0), 'Y-positions are not equal'
+    assert np.allclose(area, area0), 'Areas are not equal'
+    assert slices == slices0, 'Slices are not equal'
+    assert np.allclose(A, A0), 'Sum of areas are not equal'
 
     if plot:
-        _plot(px, py, xc, yc, area, slices, filename="quadrilaterals.png")
+        _plot(px, py, xc, yc, area, slices, filename='quadrilaterals.png')
 
 
 def test_clip_multi_list(plot=False):
@@ -154,14 +154,14 @@ def test_clip_multi_list(plot=False):
     ]
 
     # apply assertion tests
-    assert np.allclose(xc, xc0), "X-positions are not equal"
-    assert np.allclose(yc, yc0), "Y-positions are not equal"
-    assert np.allclose(area, area0, atol=1e-3), "Areas are not equal"
-    assert slices == slices0, "Slices are not equal"
-    assert np.allclose(A, A0), "Sum of areas are not equal"
+    assert np.allclose(xc, xc0), 'X-positions are not equal'
+    assert np.allclose(yc, yc0), 'Y-positions are not equal'
+    assert np.allclose(area, area0, atol=1e-3), 'Areas are not equal'
+    assert slices == slices0, 'Slices are not equal'
+    assert np.allclose(A, A0), 'Sum of areas are not equal'
 
     if plot:
-        _plot(px, py, xc, yc, area, slices, filename="polygons.png")
+        _plot(px, py, xc, yc, area, slices, filename='polygons.png')
 
 
 def test_clip_single(plot=False):
@@ -232,10 +232,10 @@ def test_clip_single(plot=False):
     # for the single, there is no notion of the polyindices
 
     # apply assertion tests
-    assert np.allclose(xc, xc0), "X-positions are not equal"
-    assert np.allclose(yc, yc0), "Y-positions are not equal"
-    assert np.allclose(area, A0), "Areas are not equal"
-    assert slices == slices0, "Slices are not equal"
+    assert np.allclose(xc, xc0), 'X-positions are not equal'
+    assert np.allclose(yc, yc0), 'Y-positions are not equal'
+    assert np.allclose(area, A0), 'Areas are not equal'
+    assert slices == slices0, 'Slices are not equal'
 
     if plot:
         _plot(px[np.newaxis, ...], py[np.newaxis, ...], xc, yc, area, slices)
@@ -357,7 +357,7 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
         theta = (np.arange(0, 2 * np.pi, 2 * np.pi / nvert)
                  + theta0 * np.pi / 180.0)
     else:
-        raise ValueError("Cannot make polygon with fewer than 2 vertices.")
+        raise ValueError('Cannot make polygon with fewer than 2 vertices.')
     # compute the coordinates
     x = radius * np.cos(theta) + x0
     y = radius * np.sin(theta) + y0
@@ -432,7 +432,7 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
         xy = np.column_stack((xx, yy))
 
         # draw the region as a Patch
-        patch = Polygon(xy, color=color, alpha=alpha, label=f"{A:.2f}")
+        patch = Polygon(xy, color=color, alpha=alpha, label=f'{A:.2f}')
         ax.add_patch(patch)
 
         # plot the vertices
@@ -440,10 +440,10 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
             plt.text(
                 x + 0.5,
                 y + 0.5,
-                f"({x},{y})\n{a:.2f}",
+                f'({x},{y})\n{a:.2f}',
                 color=color,
-                ha="center",
-                va="center",
+                ha='center',
+                va='center',
             )
 
             # update the plot ranges
@@ -452,7 +452,7 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
             ymin = min(ymin, y)
             ymax = max(ymax, y)
     # put a legend in the figure
-    ax.legend(title=r"Areas", loc="upper left")
+    ax.legend(title=r'Areas', loc='upper left')
 
     # relabel the tick marks
     xticks = np.arange(xmin, xmax + 1, dtype=int)
@@ -462,11 +462,11 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
     ax.yaxis.set_ticks(yticks)
 
     # put on a grid
-    ax.grid(which="major")
+    ax.grid(which='major')
 
     # label axes
-    ax.set_xlabel("X (pixels)")
-    ax.set_ylabel("Y (pixels)")
+    ax.set_xlabel('X (pixels)')
+    ax.set_ylabel('Y (pixels)')
 
     # set the ranges
     ax.set_xlim(np.amin(xc) - 0.5, np.amax(xc) + 1)
@@ -480,7 +480,7 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
         plt.show()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     test_clip_multi_list(plot=True)
     test_clip_multi_numpy(plot=True)
     test_clip_single(plot=True)

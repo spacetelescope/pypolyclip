@@ -99,7 +99,7 @@ def clip_multi(x, y, nxy):
             t[i] = np.clip(np.floor(np.amax(_y)), 0, nxy[1])
             indices[i + 1] = indices[i] + len(_x)
     else:
-        raise TypeError("Invalid types for the input polygons.")
+        raise TypeError('Invalid types for the input polygons.')
 
     # maximum number of pixels that could be affected
     npix = sum((r - l + 1) * (t - b + 1))
