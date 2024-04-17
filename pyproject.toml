@@ -25,14 +25,14 @@ classifiers = [
 ]
 dynamic = ['version']
 requires-python = '>=3.9'
-dependencies = ['numpy>=1.22.3']
+dependencies = ['numpy>=1.23']
 
 [project.urls]
 Homepage = 'https://github.com/spacetelescope/pypolyclip'
 
 [project.optional-dependencies]
 test = [
-    'pytest-astropy>=0.10',
+    'pytest-astropy>=0.11',
     'matplotlib',
 ]
 
@@ -40,7 +40,7 @@ test = [
 requires = [
     'setuptools>=61.2',
     'setuptools_scm>=6.2',
-    'numpy',
+    'numpy>=2.0.0rc1',
 ]
 build-backend = 'setuptools.build_meta'
 
