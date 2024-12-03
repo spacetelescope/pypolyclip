@@ -44,20 +44,32 @@ jobs:
 
           - os: ubuntu-latest
             python: '3.11'
-            tox_env: 'py311-test-cov'
+            tox_env: 'py310-test'
+            allow_failure: false
+            prefix: ''
+
+          - os: ubuntu-latest
+            python: '3.12'
+            tox_env: 'py312-test-cov'
             toxposargs: --remote-data=any
             allow_failure: false
             prefix: ''
 
           - os: macos-latest
-            python: '3.11'
-            tox_env: 'py311-test'
+            python: '3.12'
+            tox_env: 'py312-test'
             allow_failure: false
             prefix: ''
 
           - os: windows-latest
-            python: '3.11'
-            tox_env: 'py311-test'
+            python: '3.12'
+            tox_env: 'py312-test'
+            allow_failure: false
+            prefix: ''
+
+          - os: ubuntu-latest
+            python: '3.13'
+            tox_env: 'py313-test'
             allow_failure: false
             prefix: ''
 
@@ -80,8 +92,8 @@ jobs:
             prefix: ''
 
           - os: ubuntu-latest
-            python: '3.12'
-            tox_env: 'py312-test-devdeps'
+            python: '3.13'
+            tox_env: 'py313-test-devdeps'
             allow_failure: true
             prefix: '(Allowed failure)'
 
