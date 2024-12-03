@@ -44,20 +44,32 @@ jobs:
 
           - os: ubuntu-latest
             python: '3.11'
-            tox_env: 'py311-test-cov'
+            tox_env: 'py310-test'
+            allow_failure: false
+            prefix: ''
+
+          - os: ubuntu-latest
+            python: '3.12'
+            tox_env: 'py312-test-cov'
             toxposargs: --remote-data=any
             allow_failure: false
             prefix: ''
 
           - os: macos-latest
-            python: '3.11'
-            tox_env: 'py311-test'
+            python: '3.12'
+            tox_env: 'py312-test'
             allow_failure: false
             prefix: ''
 
           - os: windows-latest
-            python: '3.11'
-            tox_env: 'py311-test'
+            python: '3.12'
+            tox_env: 'py312-test'
+            allow_failure: false
+            prefix: ''
+
+          - os: ubuntu-latest
+            python: '3.13'
+            tox_env: 'py313-test'
             allow_failure: false
             prefix: ''
 
@@ -80,18 +92,18 @@ jobs:
             prefix: ''
 
           - os: ubuntu-latest
-            python: '3.12'
-            tox_env: 'py312-test-devdeps'
+            python: '3.13'
+            tox_env: 'py313-test-devdeps'
             allow_failure: true
             prefix: '(Allowed failure)'
 
     steps:
     - name: Check out repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
       with:
         python-version: ${{ matrix.python }}
     - name: Install base dependencies
@@ -106,7 +118,7 @@ jobs:
       run: tox -e ${{ matrix.tox_env }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.tox_env, '-cov') }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@015f24e6818733317a2da2edd6290ab26238649a  # v5.0.7
       with:
         files: ./coverage.xml
         verbose: true

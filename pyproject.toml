@@ -40,7 +40,7 @@ test = [
 requires = [
     'setuptools>=61.2',
     'setuptools_scm>=6.2',
-    'numpy>=2.0.0rc1',
+    'numpy>=2.0.0',
 ]
 build-backend = 'setuptools.build_meta'
 
@@ -64,8 +64,6 @@ xfail_strict = true
 remote_data_strict = true
 filterwarnings = [
     'error',
-    # python 3.12 deprecation in dateutil (called from matplotlib)
-    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
 ]
 
 [tool.coverage.run]
