@@ -59,11 +59,17 @@ minversion = 7.0
 testpaths = [
     'pypolyclip',
 ]
-addopts = '--color=yes'
+addopts = [
+    '-ra',
+    '--color=yes',
+    '--strict-config',
+    '--strict-markers',
+]
+log_cli_level = 'INFO'
 xfail_strict = true
 remote_data_strict = true
 filterwarnings = [
-    'error',
+    'error',  # turn warnings into exceptions
 ]
 
 [tool.coverage.run]
@@ -105,3 +111,17 @@ force-exclude = """
 
 [tool.bandit.assert_used]
 skips = ['*_test.py', '*/test_*.py']
+
+[tool.repo-review]
+ignore = [
+    'MY',  # ignore MyPy
+    'PC110',  # ignore using black or ruff-format in pre-commit
+    'PC111',  # ignore using blacken-docs in pre-commit
+    'PC140',  # ignore using mypy in pre-commit
+    'PC180',  # ignore using prettier in pre-commit
+    'PC901',  # ignore using custom pre-commit update message
+    'PY005',  # ignore having a tests/ folder
+    'RTD100', # ignore having a .readthedocs.yaml file
+    'PC190',  # TMP: Ruff
+    'RF001',  # TMP: Ruff config
+]
