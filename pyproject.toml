@@ -146,3 +146,8 @@ exclude = [
     '\._.*',  # private functions/methods
     '^test_*',  # test code
 ]
+
+[tool.docformatter]
+    wrap-summaries = 72
+    pre-summary-newline = true
+    make-summary-multi-line = true

@@ -6,7 +6,9 @@ from pypolyclip import clip_multi, clip_single
 
 
 def test_clip_multi_numpy(plot=False):
-    """A module to test clipping multiple polygons in a single pass."""
+    """
+    A module to test clipping multiple polygons in a single pass.
+    """
 
     # define the size of the pixel grid
     # naxis=np.array((100,100),dtype=int)
@@ -85,7 +87,9 @@ def test_clip_multi_numpy(plot=False):
 
 
 def test_clip_multi_list(plot=False):
-    """A module to test clipping multiple polygons in a single pass."""
+    """
+    A module to test clipping multiple polygons in a single pass.
+    """
 
     # define the size of the pixel grid
     naxis = (100, 100)
@@ -165,7 +169,9 @@ def test_clip_multi_list(plot=False):
 
 
 def test_clip_single(plot=False):
-    """A module to test clipping a single polygon."""
+    """
+    A module to test clipping a single polygon.
+    """
 
     # define the size of the pixel grid
     naxis = np.array((100, 100), dtype=int)
@@ -242,7 +248,9 @@ def test_clip_single(plot=False):
 
 
 def test_clip_single_outpolygons():
-    """A module to test clipping a single polygon with output polygons."""
+    """
+    A module to test clipping a single polygon with output polygons.
+    """
 
     # define the size of the pixel grid
     naxis = np.array((100, 100), dtype=int)
@@ -272,7 +280,7 @@ def test_clip_single_outpolygons():
 
 def _area(px, py, axis=None):
     """
-    Implement the shoelace formula for area of a simple polygon
+    Implement the shoelace formula for area of a simple polygon.
 
     Parameters
     ----------
@@ -294,7 +302,6 @@ def _area(px, py, axis=None):
     Notes
     -----
     https://en.wikipedia.org/wiki/Shoelace_formula
-
     """
     A = 0.5 * np.abs(
         np.sum(px * np.roll(py, 1, axis=axis), axis=axis)
@@ -305,7 +312,7 @@ def _area(px, py, axis=None):
 
 def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
     """
-    Module to make polygon vertices
+    Module to make polygon vertices.
 
     Parameters
     ----------
@@ -340,7 +347,6 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
     Notes
     -----
     https://en.wikipedia.org/wiki/Star_polygon
-
     """
 
     if nvert < -2:
@@ -369,7 +375,7 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
 def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
           filename=None, show=True):
     """
-    Helper function to plot the results from pypolyclip
+    Helper function to plot the results from pypolyclip.
 
     Parameters
     ----------
@@ -402,7 +408,6 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
 
     filename : str, optional
        a name to output a file.  Default is None (ie no file written)
-
     """
 
     # initialize the Random seed
