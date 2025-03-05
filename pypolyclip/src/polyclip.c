@@ -166,7 +166,7 @@ char polyclip_test(void) {
 /*void polyclip_single(int argc,void * argv[]) {*/
 void polyclip_single(int l,int r,int b,int t,float *px,float *py,int nverts,int *inds,int *nclip_poly,float *areas,float *px_out,float *py_out,int *ri_out){
 
-  //int i,j,l,r,b,t,nverts,nv_clip,indx;
+  //int i,j,l,r,b,t,nverts,nv_clip,index;
   //float *px,*py,*px_out,*py_out,*areas,area;
   //int *inds,*nclip_poly,*ri_out;
   /* Input */
@@ -177,22 +177,22 @@ void polyclip_single(int l,int r,int b,int t,float *px,float *py,int nverts,int 
   //areas=(float *)argv[9];
   //px_out=(float *)argv[10]; py_out=(float *)argv[11]; ri_out=(int *)argv[12];
 
-  int i,j,indx,nv_clip;
+  int i,j,index,nv_clip;
   float area;
 
 
   ri_out[0]=0;
-  for(indx=0,i=l;i<=r;i++) {
+  for(index=0,i=l;i<=r;i++) {
     for(j=b;j<=t;j++) {
       if((nv_clip=polyclip(px,py,nverts,i,j,px_out,py_out))) {
 	area=polyclip_area(px_out,py_out,nv_clip);
 	if (area==0.0) continue;
-	areas[indx]=area;	/* Discard degenerates */
+	areas[index]=area;	/* Discard degenerates */
 	(*nclip_poly)++;
-	ri_out[indx+1]=ri_out[indx]+nv_clip;
+	ri_out[index+1]=ri_out[index]+nv_clip;
 	px_out+=nv_clip; py_out+=nv_clip; /* Offset for next output poly */
-	inds[2*indx]=i; inds[2*indx+1]=j;
-	indx++;
+	inds[2*index]=i; inds[2*index+1]=j;
+	index++;
       }
     }
   }
@@ -206,7 +206,7 @@ void polyclip_single(int l,int r,int b,int t,float *px,float *py,int nverts,int 
 void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
 		    int n_poly,int *poly_inds,int*xx,int*yy,
 		    int*nclip_poly,float*areas){
-  int i,j,k,nv_clip,indx;
+  int i,j,k,nv_clip,index;
   //float *px,*py,*px_out,*py_out,*areas,area;
   float *px_out,*py_out,area;
   //  int n_poly;
@@ -242,7 +242,7 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
 
 
   /* Clip each polygon and accumulate results */
-  for(indx=0,prev_pind=0,k=0;k<n_poly;k++) {
+  for(index=0,prev_pind=0,k=0;k<n_poly;k++) {
     nverts=poly_inds[k+1]-prev_pind;
     this_nclip_poly=0;
     for(i=l[k];i<=r[k];i++) {
@@ -255,13 +255,13 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
 	  printf("area: %f\n",area);
 	  printf("\n\n\n");*/
 	  if (area==0.0) continue; /* Discard degenerates */
-	  areas[indx]=area;
+	  areas[index]=area;
 	  this_nclip_poly++;
-	  //	  inds[2*indx]=i;
-	  //inds[2*indx+1]=j;
-	  xx[indx]=i;
-	  yy[indx]=j;
-	  indx++;
+	  //	  inds[2*index]=i;
+	  //inds[2*index+1]=j;
+	  xx[index]=i;
+	  yy[index]=j;
+	  index++;
 	}
       }
     }
