@@ -1,3 +1,8 @@
+"""
+This module provides a Python interface to the polyclip.c code by J.D.
+Smith. The polyclip.c code is a fast polygon clipper that can be used to
+clip polygons against a tessellated grid of square pixels.
+"""
 import numpy as np
 
 from pypolyclip import polyclip
@@ -28,7 +33,7 @@ def clip_multi(x, y, nxy):
     -------
     xx : 2D `np.ndarray` of int
         The x-pixel indices that have overlapping area. Each row
-        represents a separate polygon
+        represents a separate polygon.
 
     yy : 2D `np.ndarray` of int
         The y-pixel indices that have overlapping area. Each row
@@ -44,7 +49,7 @@ def clip_multi(x, y, nxy):
 
     Notes
     -----
-    This is a Python driver to call JD Smith's polyclip.c code.
+    This is a Python driver to call J.D. Smith's polyclip.c code.
 
     This function does not validate that the input polygons are
     valid. One way to check for valid polygons is to use the `Shapely
@@ -148,7 +153,7 @@ def clip_single(x, y, nxy, return_polygons=False):
     return_polygons : bool, optional
         If `True`, then the ``px`` and ``py`` arrays that describe the
         coordinates of the clipped polygons will also be returned.
-        Default = False
+        The default is `False`.
 
     Returns
     -------
@@ -177,7 +182,7 @@ def clip_single(x, y, nxy, return_polygons=False):
 
     Notes
     -----
-    This is a Python driver to call JD Smith's polyclip.c code.
+    This is a Python driver to call J.D. Smith's polyclip.c code.
 
     This function does not validate that the input polygons are
     valid. One way to check for valid polygons is to use the `Shapely
