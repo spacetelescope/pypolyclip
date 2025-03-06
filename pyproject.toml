@@ -59,11 +59,17 @@ minversion = 7.0
 testpaths = [
     'pypolyclip',
 ]
-addopts = '--color=yes'
+addopts = [
+    '-ra',
+    '--color=yes',
+    '--strict-config',
+    '--strict-markers',
+]
+log_cli_level = 'INFO'
 xfail_strict = true
 remote_data_strict = true
 filterwarnings = [
-    'error',
+    'error',  # turn warnings into exceptions
 ]
 
 [tool.coverage.run]
@@ -105,3 +111,71 @@ force-exclude = """
 
 [tool.bandit.assert_used]
 skips = ['*_test.py', '*/test_*.py']
+
+[tool.repo-review]
+ignore = [
+    'MY',  # ignore MyPy
+    'PC110',  # ignore using black or ruff-format in pre-commit
+    'PC111',  # ignore using blacken-docs in pre-commit
+    'PC140',  # ignore using mypy in pre-commit
+    'PC180',  # ignore using prettier in pre-commit
+    'PC901',  # ignore using custom pre-commit update message
+    'PY005',  # ignore having a tests/ folder
+    'RTD100', # ignore having a .readthedocs.yaml file
+]
+
+[tool.numpydoc_validation]
+checks = [
+    'all',   # report on all checks, except the below
+    'ES01',  # missing extended summary
+    'EX01',  # missing "Examples"
+    'RT01',  # do not require return type for lazy properties
+    'RT02',  # only type in "Returns" section (no name)
+    'SA01',  # missing "See Also"
+    'SA04',  # missing "See Also" description
+    'SS06',  # single-line summary
+]
+
+# don't report on objects that match any of these regex;
+# remember to use single quotes for regex in TOML
+exclude = [
+    '__init__',
+    'setup',
+    '\._.*',  # private functions/methods
+    '^test_*',  # test code
+]
+
+[tool.docformatter]
+    wrap-summaries = 72
+    pre-summary-newline = true
+    make-summary-multi-line = true
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint.pylint]
+max-statements = 130
+
+[tool.ruff.lint]
+select = ['ALL']
+ignore = [
+    'ANN',
+    'D200',
+    'D205',
+    'D401',
+    'EM101',
+    'ERA001',
+    'FBT002',
+    'Q000',
+    'PLR0913',
+    'PLR2004',
+    'PTH',
+    'S101',
+    'TRY003',
+]
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = ['D104', 'I']
+
+[tool.ruff.lint.pydocstyle]
+convention = 'numpy'

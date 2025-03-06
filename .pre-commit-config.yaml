@@ -1,5 +1,6 @@
 ci:
   autofix_prs: false
+  autoupdate_schedule: 'monthly'
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -53,37 +54,50 @@ repos:
       - id: python-check-blanket-noqa
         # Enforce that all noqa annotations always occur with specific codes.
 
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.9.9"
     hooks:
-      - id: pyupgrade
-        args: ["--py39-plus"]
-        exclude: ".*(extern.*)$"
+      - id: ruff
+        args: ["--fix", "--show-fixes"]
+
+  - repo: https://github.com/scientific-python/cookie
+    rev: 2025.01.22
+    hooks:
+      - id: sp-repo-review
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
       - id: isort
         name: isort (python)
         additional_dependencies: [toml]
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.1
+    rev: 7.1.2
     hooks:
       - id: flake8
 
-  - repo: https://github.com/asottile/yesqa
-    rev: v1.5.0
-    hooks:
-      - id: yesqa
-
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         args: ["--write-changes", "--ignore-words-list", "exten, conver, fom"]
         additional_dependencies:
           - tomli
+
+  - repo: https://github.com/numpy/numpydoc
+    rev: v1.8.0
+    hooks:
+      - id: numpydoc-validation
+
+  # temporarily use commit from master branch until the next release
+  # see https://github.com/PyCQA/docformatter/pull/287
+  - repo: https://github.com/PyCQA/docformatter
+    rev: 06907d0267368b49b9180eed423fae5697c1e909
+    hooks:
+      - id: docformatter
+        additional_dependencies: [tomli]
+        args: [--in-place, --config, ./pyproject.toml]
 
   - repo: https://github.com/MarcoGorelli/absolufy-imports
     rev: v0.3.1

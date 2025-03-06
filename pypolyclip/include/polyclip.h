@@ -1,6 +1,6 @@
 /*
 
-     C header file to employ JD Smith's polygon clipping code.
+     C header file to employ J.D. Smith's polygon clipping code.
 
      This header file was written by Russell Ryan.
 
