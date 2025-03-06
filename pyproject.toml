@@ -172,7 +172,6 @@ ignore = [
     'PTH',
     'S101',
     'TRY003',
-    'NPY002',  # TMP
 ]
 
 [tool.ruff.lint.per-file-ignores]

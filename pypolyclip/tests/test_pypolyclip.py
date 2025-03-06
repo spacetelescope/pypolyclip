@@ -369,8 +369,8 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
     return list(x), list(y)
 
 
-def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
-          filename=None, show=True):
+def _plot(px, py, xc, yc, areas, slices, seed=0, alpha=0.2, filename=None,
+          show=True):
     """
     Plot the results from pypolyclip.
 
@@ -395,7 +395,7 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
        a list of slice objects to link the clipped space to the polygon
 
     seed : int, optional
-       seed to set the random colors, default is 1618033988
+       seed to set the random colors.
 
     alpha : float, optional
        the alpha graphics setting, default is 0.2
@@ -407,7 +407,7 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
        a name to output a file.  Default is None (ie no file written)
     """
     # initialize the Random seed
-    np.random.seed(seed)
+    rng = np.random.default_rng(seed)
 
     # make a canvas of a certain size
     figsize = (
@@ -428,7 +428,7 @@ def _plot(px, py, xc, yc, areas, slices, seed=1618033988, alpha=0.2,
     # plot each region
     for xx, yy, ss in zip(px, py, slices):
         # get the random color, area, and vertices for each region
-        color = np.random.rand(3)
+        color = rng.random(3)
         total_area = np.sum(areas[ss])
         xy = np.column_stack((xx, yy))
 
