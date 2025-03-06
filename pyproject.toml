@@ -122,8 +122,6 @@ ignore = [
     'PC901',  # ignore using custom pre-commit update message
     'PY005',  # ignore having a tests/ folder
     'RTD100', # ignore having a .readthedocs.yaml file
-    'PC190',  # TMP: Ruff
-    'RF001',  # TMP: Ruff config
 ]
 
 [tool.numpydoc_validation]
@@ -131,11 +129,11 @@ checks = [
     'all',   # report on all checks, except the below
     'ES01',  # missing extended summary
     'EX01',  # missing "Examples"
+    'RT01',  # do not require return type for lazy properties
+    'RT02',  # only type in "Returns" section (no name)
     'SA01',  # missing "See Also"
     'SA04',  # missing "See Also" description
-    'RT02',  # only type in "Returns" section (no name)
     'SS06',  # single-line summary
-    'RT01',  # do not require return type for lazy properties
 ]
 
 # don't report on objects that match any of these regex;
@@ -151,3 +149,34 @@ exclude = [
     wrap-summaries = 72
     pre-summary-newline = true
     make-summary-multi-line = true
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint.pylint]
+max-statements = 130
+
+[tool.ruff.lint]
+select = ['ALL']
+ignore = [
+    'ANN',
+    'D200',
+    'D205',
+    'D401',
+    'EM101',
+    'ERA001',
+    'FBT002',
+    'Q000',
+    'PLR0913',
+    'PLR2004',
+    'PTH',
+    'S101',
+    'TRY003',
+    'NPY002',  # TMP
+]
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = ['D104', 'I']
+
+[tool.ruff.lint.pydocstyle]
+convention = 'numpy'

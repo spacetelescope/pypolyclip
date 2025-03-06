@@ -54,6 +54,12 @@ repos:
       - id: python-check-blanket-noqa
         # Enforce that all noqa annotations always occur with specific codes.
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.9.9"
+    hooks:
+      - id: ruff
+        args: ["--fix", "--show-fixes"]
+
   - repo: https://github.com/scientific-python/cookie
     rev: 2025.01.22
     hooks:

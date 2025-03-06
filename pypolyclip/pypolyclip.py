@@ -1,5 +1,5 @@
 """
-This module provides a Python interface to the polyclip.c.
+Module that provides a Python interface to polyclip.c.
 
 The polyclip.c code is a fast polygon clipper that can be used to clip
 polygons against a tessellated grid of square pixels.
@@ -252,5 +252,4 @@ def clip_single(x, y, nxy, return_polygons=False):
             py.append(py_out[s])
 
         return xx, yy, areas, slices, px, py
-    else:
-        return xx, yy, areas, slices
+    return xx, yy, areas, slices
