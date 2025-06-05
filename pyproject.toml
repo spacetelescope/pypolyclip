@@ -2,7 +2,7 @@
 name = 'pypolyclip'
 description = 'A python driver to the polyclip functions'
 readme = 'README.md'
-license = {file = 'LICENSE.rst'}
+license-files = ['LICENSE.rst']
 authors = [
     {name = 'Pypolyclip Developers', email = 'help@stsci.edu'}
 ]
@@ -16,7 +16,6 @@ keywords = [
 ]
 classifiers = [
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: BSD License',
     'Natural Language :: English',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
