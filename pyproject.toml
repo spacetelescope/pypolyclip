@@ -168,6 +168,7 @@ ignore = [
     'Q000',
     'PLR0913',
     'PLR2004',
+    'PT028',  # pytest-parameter-with-default-argument
     'PTH',
     'S101',
     'TRY003',
