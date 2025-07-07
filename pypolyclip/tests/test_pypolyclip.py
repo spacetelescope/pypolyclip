@@ -13,7 +13,6 @@ def test_clip_multi_numpy(plot=False):
     Test clipping multiple polygons in a single pass.
     """
     # define the size of the pixel grid
-    # naxis=np.array((100,100),dtype=int)
     naxis = (100, 100)
 
     # create 6 polygons to clip... here they're an irregular quadralateral, but
