@@ -3,17 +3,17 @@ Tests for the pypolyclip module.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 from matplotlib.patches import Polygon
 
 from pypolyclip import clip_multi, clip_single
 
 
-def test_clip_multi_numpy(plot=False):
+def test_clip_multi_numpy(*, plot=False):
     """
     Test clipping multiple polygons in a single pass.
     """
     # define the size of the pixel grid
-    # naxis=np.array((100,100),dtype=int)
     naxis = (100, 100)
 
     # create 6 polygons to clip... here they're an irregular quadralateral, but
@@ -88,7 +88,22 @@ def test_clip_multi_numpy(plot=False):
         _plot(px, py, xc, yc, area, slices, filename='quadrilaterals.png')
 
 
-def test_clip_multi_list(plot=False):
+def test_clip_multi_invalid_input():
+    """
+    Test invalid inputs to clip_multi.
+    """
+    # define the size of the pixel grid
+    naxis = (100, 100)
+
+    match = 'Invalid types for the input polygons'
+    px = 3.4
+    py = [1.4, 1.9, 1.9, 1.4]
+    naxis = (100, 100)
+    with pytest.raises(TypeError, match=match):
+        clip_multi(px, py, naxis)
+
+
+def test_clip_multi_list(*, plot=False):
     """
     Test clipping multiple polygons in a single pass.
     """
@@ -169,7 +184,7 @@ def test_clip_multi_list(plot=False):
         _plot(px, py, xc, yc, area, slices, filename='polygons.png')
 
 
-def test_clip_single(plot=False):
+def test_clip_single(*, plot=False):
     """
     Test clipping a single polygon.
     """
@@ -360,7 +375,8 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
         theta = (np.arange(0, 2 * np.pi, 2 * np.pi / nvert)
                  + theta0 * np.pi / 180.0)
     else:
-        raise ValueError('Cannot make polygon with fewer than 2 vertices.')
+        msg = 'Cannot make polygon with fewer than 2 vertices.'
+        raise ValueError(msg)
     # compute the coordinates
     x = radius * np.cos(theta) + x0
     y = radius * np.sin(theta) + y0
@@ -369,7 +385,7 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
     return list(x), list(y)
 
 
-def _plot(px, py, xc, yc, areas, slices, seed=0, alpha=0.2, filename=None,
+def _plot(px, py, xc, yc, areas, slices, *, seed=0, alpha=0.2, filename=None,
           show=True):
     """
     Plot the results from pypolyclip.

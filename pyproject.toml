@@ -161,21 +161,16 @@ ignore = [
     'ANN',
     'D200',
     'D205',
-    'D401',
-    'EM101',
-    'ERA001',
-    'FBT002',
     'Q000',
     'PLR0913',
     'PLR2004',
     'PT028',  # pytest-parameter-with-default-argument
     'PTH',
-    'S101',
-    'TRY003',
 ]
 
 [tool.ruff.lint.per-file-ignores]
 '__init__.py' = ['D104', 'I']
+'test_*.py' = ['D', 'S101']
 
 [tool.ruff.lint.pydocstyle]
 convention = 'numpy'
