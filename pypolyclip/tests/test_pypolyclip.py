@@ -3,6 +3,7 @@ Tests for the pypolyclip module.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 from matplotlib.patches import Polygon
 
 from pypolyclip import clip_multi, clip_single
@@ -85,6 +86,21 @@ def test_clip_multi_numpy(*, plot=False):
 
     if plot:
         _plot(px, py, xc, yc, area, slices, filename='quadrilaterals.png')
+
+
+def test_clip_multi_invalid_input():
+    """
+    Test invalid inputs to clip_multi.
+    """
+    # define the size of the pixel grid
+    naxis = (100, 100)
+
+    match = 'Invalid types for the input polygons'
+    px = 3.4
+    py = [1.4, 1.9, 1.9, 1.4]
+    naxis = (100, 100)
+    with pytest.raises(TypeError, match=match):
+        clip_multi(px, py, naxis)
 
 
 def test_clip_multi_list(*, plot=False):
