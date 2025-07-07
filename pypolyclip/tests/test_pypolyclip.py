@@ -360,7 +360,8 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
         theta = (np.arange(0, 2 * np.pi, 2 * np.pi / nvert)
                  + theta0 * np.pi / 180.0)
     else:
-        raise ValueError('Cannot make polygon with fewer than 2 vertices.')
+        msg = 'Cannot make polygon with fewer than 2 vertices.'
+        raise ValueError(msg)
     # compute the coordinates
     x = radius * np.cos(theta) + x0
     y = radius * np.sin(theta) + y0

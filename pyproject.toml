@@ -161,7 +161,6 @@ ignore = [
     'ANN',
     'D200',
     'D205',
-    'EM101',
     'ERA001',
     'FBT002',
     'Q000',
@@ -169,7 +168,6 @@ ignore = [
     'PLR2004',
     'PT028',  # pytest-parameter-with-default-argument
     'PTH',
-    'TRY003',
 ]
 
 [tool.ruff.lint.per-file-ignores]
