@@ -137,7 +137,7 @@ def clip_multi(x, y, nxy):
     return xx, yy, areas, slices
 
 
-def clip_single(x, y, nxy, return_polygons=False):
+def clip_single(x, y, nxy, *, return_polygons=False):
     """
     Clip a single polygon against a tessellated grid of square pixels.
 

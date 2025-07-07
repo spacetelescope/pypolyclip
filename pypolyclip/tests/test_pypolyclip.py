@@ -8,7 +8,7 @@ from matplotlib.patches import Polygon
 from pypolyclip import clip_multi, clip_single
 
 
-def test_clip_multi_numpy(plot=False):
+def test_clip_multi_numpy(*, plot=False):
     """
     Test clipping multiple polygons in a single pass.
     """
@@ -87,7 +87,7 @@ def test_clip_multi_numpy(plot=False):
         _plot(px, py, xc, yc, area, slices, filename='quadrilaterals.png')
 
 
-def test_clip_multi_list(plot=False):
+def test_clip_multi_list(*, plot=False):
     """
     Test clipping multiple polygons in a single pass.
     """
@@ -168,7 +168,7 @@ def test_clip_multi_list(plot=False):
         _plot(px, py, xc, yc, area, slices, filename='polygons.png')
 
 
-def test_clip_single(plot=False):
+def test_clip_single(*, plot=False):
     """
     Test clipping a single polygon.
     """
@@ -369,7 +369,7 @@ def _polygon(nvert, radius=1, factor=2, theta0=0.0, x0=0.0, y0=0.0):
     return list(x), list(y)
 
 
-def _plot(px, py, xc, yc, areas, slices, seed=0, alpha=0.2, filename=None,
+def _plot(px, py, xc, yc, areas, slices, *, seed=0, alpha=0.2, filename=None,
           show=True):
     """
     Plot the results from pypolyclip.
