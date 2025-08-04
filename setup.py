@@ -1,6 +1,7 @@
 """
 Setup script for pypolyclip.
 """
+
 import os
 from glob import glob
 

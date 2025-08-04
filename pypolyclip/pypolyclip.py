@@ -4,6 +4,7 @@ Module that provides a Python interface to polyclip.c.
 The polyclip.c code is a fast polygon clipper that can be used to clip
 polygons against a tessellated grid of square pixels.
 """
+
 import numpy as np
 
 from pypolyclip import polyclip
