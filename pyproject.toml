@@ -5,7 +5,7 @@ readme = 'README.md'
 license = 'BSD-3-Clause'
 license-files = ['LICENSE.rst']
 authors = [
-    {name = 'Pypolyclip Developers', email = 'help@stsci.edu'}
+    {name = 'Pypolyclip Developers'},
 ]
 keywords = [
     'computational geometry',
