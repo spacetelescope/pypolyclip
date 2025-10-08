@@ -98,7 +98,7 @@ def clip_multi(x, y, nxy):
         t = np.empty(npoly, dtype=INT)
         indices = np.empty(npoly + 1, dtype=INT)
         indices[0] = 0
-        for i, (_x, _y) in enumerate(zip(x, y)):
+        for i, (_x, _y) in enumerate(zip(x, y, strict=False)):
             l[i] = np.clip(np.floor(np.amin(_x)), 0, nxy[0])
             r[i] = np.clip(np.floor(np.amax(_x)), 0, nxy[0])
             b[i] = np.clip(np.floor(np.amin(_y)), 0, nxy[1])

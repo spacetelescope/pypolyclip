@@ -288,8 +288,8 @@ def test_clip_single_outpolygons():
     _, _, _, _, xout, yout = clip_single(px, py, naxis, return_polygons=True)
 
     # require equality between expected and outputs
-    assert all(np.allclose(x1, x2) for x1, x2 in zip(xout, xe))
-    assert all(np.allclose(y1, y2) for y1, y2 in zip(yout, ye))
+    assert all(np.allclose(x1, x2) for x1, x2 in zip(xout, xe, strict=False))
+    assert all(np.allclose(y1, y2) for y1, y2 in zip(yout, ye, strict=False))
 
 
 def _area(px, py, axis=None):
@@ -442,7 +442,7 @@ def _plot(px, py, xc, yc, areas, slices, *, seed=0, alpha=0.2, filename=None,
     ymin, ymax = np.inf, 0
 
     # plot each region
-    for xx, yy, ss in zip(px, py, slices):
+    for xx, yy, ss in zip(px, py, slices, strict=False):
         # get the random color, area, and vertices for each region
         color = rng.random(3)
         total_area = np.sum(areas[ss])
@@ -454,7 +454,7 @@ def _plot(px, py, xc, yc, areas, slices, *, seed=0, alpha=0.2, filename=None,
         ax.add_patch(patch)
 
         # plot the vertices
-        for x, y, a in zip(xc[ss], yc[ss], areas[ss]):
+        for x, y, a in zip(xc[ss], yc[ss], areas[ss], strict=False):
             plt.text(
                 x + 0.5,
                 y + 0.5,

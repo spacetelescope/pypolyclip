@@ -1,6 +1,12 @@
 1.2.0 (unreleased)
 ------------------
 
+- The minimum required Python is now 3.11. [#51]
+
+- The minimum required NumPy is now 2.0. [#51]
+
+- The minimum required Matplotlib is now 3.9. [#51]
+
 
 1.1.0 (2024-04-17)
 ------------------
