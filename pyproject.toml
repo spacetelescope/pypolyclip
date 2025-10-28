@@ -24,8 +24,8 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Astronomy',
 ]
 dynamic = ['version']
-requires-python = '>=3.9'
-dependencies = ['numpy>=1.23']
+requires-python = '>=3.11'
+dependencies = ['numpy>=2.0']
 
 [project.urls]
 Homepage = 'https://github.com/spacetelescope/pypolyclip'
@@ -33,14 +33,14 @@ Homepage = 'https://github.com/spacetelescope/pypolyclip'
 [project.optional-dependencies]
 test = [
     'pytest-astropy>=0.11',
-    'matplotlib',
+    'matplotlib>=3.9',
 ]
 
 [build-system]
 requires = [
-    'setuptools>=61.2',
-    'setuptools_scm>=6.2',
-    'numpy>=2.0.0',
+    'setuptools>=77.0',
+    'setuptools_scm>=8.0',
+    'numpy>=2.0',
 ]
 build-backend = 'setuptools.build_meta'
 
