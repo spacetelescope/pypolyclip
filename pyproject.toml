@@ -39,7 +39,7 @@ test = [
 [build-system]
 requires = [
     'setuptools>=77.0',
-    'setuptools_scm>=8.0',
+    'setuptools_scm>=8.1',
     'numpy>=2.0',
 ]
 build-backend = 'setuptools.build_meta'
@@ -55,7 +55,7 @@ include-package-data = false
 namespaces = false
 
 [tool.pytest.ini_options]
-minversion = 7.0
+minversion = "8.0"
 testpaths = [
     'pypolyclip',
 ]
