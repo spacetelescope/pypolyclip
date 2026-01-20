@@ -166,19 +166,21 @@ max-statements = 130
 [tool.ruff.lint]
 select = ['ALL']
 ignore = [
-    'ANN',
-    'D200',
-    'D205',
-    'Q000',
-    'PLR0913',
-    'PLR2004',
+    'ANN',  # type annotations
+    'D200',  # unnecessary-multiline-docstring
+    'D205',  # missing-blank-line-after-summary
+    'PLR0913',  # too-many-arguments
+    'PLR2004',  # magic-value-comparison
     'PT028',  # pytest-parameter-with-default-argument
-    'PTH',
+    'PTH',  # Pathlib usage
 ]
 
 [tool.ruff.lint.per-file-ignores]
-'__init__.py' = ['D104', 'I']
-'test_*.py' = ['D', 'S101']
+'__init__.py' = ['D104', 'I']  # undocumented-public-package, isort
+'test_*.py' = ['D', 'S101']  # pydocstyle, assert
 
 [tool.ruff.lint.pydocstyle]
 convention = 'numpy'
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'
