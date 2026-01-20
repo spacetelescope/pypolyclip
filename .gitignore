@@ -1,18 +1,74 @@
-__pycache__
-.eggs/
-build/
-dist/
-.cache
-*~
-.*.sw[op]
-*.pyc
-*.egg-info/
+# Compiled files
+*.py[cod]
+*.a
+*.o
 *.so
-pip-wheel-metadata/
-.tmp/
-env*/
+__pycache__
+
+# Ignore .c files by default to avoid including generated code. If you want to
+# add a non-generated .c extension, use `git add -f filename.c`.
+*.c
 
 # Other generated files
 */version.py
 */cython_version.py
+MANIFEST
+htmlcov
+.coverage*
+.ipynb_checkpoints
+.pytest_cache
 */tests/*.png
+
+# Sphinx
+docs/_build
+docs/api
+
+# Packages/installer info
+*.egg
+*.egg-info
+dist
+build
+eggs
+.eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+distribute-*.tar.gz
+pip-wheel-metadata
+
+# Virtual environments
+.venv
+
+# uv (Python package manager)
+uv.lock
+
+# pipenv
+Pipfile.lock
+Pipfile
+
+# poetry
+poetry.lock
+
+# Other
+.cache
+.tox
+.tmp
+.*.sw[op]
+*~
+
+# Eclipse editor project files
+.project
+.pydevproject
+.settings
+
+# PyCharm editor project files
+.idea
+
+# Visual Studio Code project files
+.vscode
+
+# Mac OSX
+.DS_Store
