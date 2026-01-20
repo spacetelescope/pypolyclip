@@ -32,8 +32,8 @@ Homepage = 'https://github.com/spacetelescope/pypolyclip'
 
 [project.optional-dependencies]
 test = [
-    'pytest-astropy>=0.11',
     'matplotlib>=3.9',
+    'pytest-astropy>=0.11',
 ]
 
 [build-system]
