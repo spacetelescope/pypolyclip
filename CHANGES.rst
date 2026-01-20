@@ -1,4 +1,4 @@
-1.2.0 (unreleased)
+1.2.0 (2026-01-20)
 ------------------
 
 - The minimum required Python is now 3.11. [#51]
