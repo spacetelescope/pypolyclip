@@ -1,3 +1,4 @@
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 """
 Pypolyclip is a Python library for clipping polygons against a pixel
 grid.
