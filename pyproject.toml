@@ -176,8 +176,14 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-'__init__.py' = ['D104', 'I']  # undocumented-public-package, isort
-'test_*.py' = ['D', 'S101']  # pydocstyle, assert
+'__init__.py' = [
+    'D104',  # undocumented-public-package
+    'I',  # isort
+]
+'test_*.py' = [
+    'D',  # pydocstyle
+    'S101',  # assert
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = 'numpy'
