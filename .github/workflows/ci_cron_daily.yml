@@ -2,7 +2,7 @@ name: Daily Cron Tests
 
 on:
   schedule:
-    # run at 6am UTC on Tue-Fri (complete tests are run every Monday)
+    # Run at 6am UTC on Tue-Fri (complete tests are run every Monday)
     - cron: '0 6 * * 2-5'
   pull_request:
     # We also want this workflow triggered if the 'Daily CI' label is added
