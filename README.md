@@ -2,7 +2,6 @@
 
 [![CI Tests](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml/badge.svg?branch=main)](https://github.com/spacetelescope/pypolyclip/actions/workflows/ci_tests.yml) [![coverage](https://codecov.io/github/spacetelescope/pypolyclip/branch/main/graph/badge.svg?token=8xpNHaI9wD)](https://codecov.io/github/spacetelescope/pypolyclip) [![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.10076768.svg)](https://doi.org/10.5281/zenodo.10076768)
 
-
 A Python package to clip polygons against a pixel grid.
 
 The polyclip functions were originally developed for the CUBISM
@@ -11,11 +10,13 @@ project [Smith et al. 2007 (PASP 119, 1133)](https://ui.adsabs.harvard.edu/abs/2
 ## Installation
 
 The package can be installed using pip from the command line:
+
 ```
 pip install pypolyclip
 ```
 
 ## Description
+
 The [polyclip](http://tir.astro.utoledo.edu/jdsmith/code/idl.php)
 code employs the [Sutherland-Hodgman
 algorithm](https://en.wikipedia.org/wiki/Sutherland–Hodgman_algorithm)
@@ -48,8 +49,8 @@ the number of vertices is the same for all polygons (such as the second
 figure), then [NumPy](https://numpy.org/) is used internally to improve
 performance by several percent.
 
-
 ## Example usage
+
 This first example demonstrates polygons with the same number of
 vertices:
 
@@ -86,7 +87,7 @@ for i, s in enumerate(slices):
 ```
 
 This second example demonstrates clipping polygons that have a different
-number of vertices.  Note that `px` and `py` are lists of lists instead
+number of vertices. Note that `px` and `py` are lists of lists instead
 of NumPy arrays as in the first example.
 
 ```
