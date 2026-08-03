@@ -167,9 +167,11 @@ max-statements = 130
 select = ['ALL']
 ignore = [
     'ANN',  # type annotations
+    'CPY001',  # missing-copyright-notice
     'D200',  # unnecessary-multiline-docstring
     'D205',  # missing-blank-line-after-summary
     'PLR0913',  # too-many-arguments
+    'PLR0917',  # too-many-positional-arguments
     'PLR2004',  # magic-value-comparison
     'PT028',  # pytest-parameter-with-default-argument
     'PTH',  # Pathlib usage
