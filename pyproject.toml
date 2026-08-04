@@ -164,7 +164,6 @@ line-length = 79
 select = ['ALL']
 ignore = [
     'ANN',  # type annotations
-    #'CPY001',  # missing-copyright-notice
     'D200',  # unnecessary-multiline-docstring
     'D205',  # missing-blank-line-after-summary
     'PLR0913',  # too-many-arguments
@@ -177,6 +176,9 @@ ignore = [
 [tool.ruff.lint.flake8-copyright]
 min-file-size = 1  # skip empty files (< 1 byte), e.g., __init__.py
 notice-rgx = 'Licensed under a 3-clause BSD style license - see LICENSE.rst'
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'
 
 [tool.ruff.lint.per-file-ignores]
 '__init__.py' = [
@@ -193,6 +195,3 @@ convention = 'numpy'
 
 [tool.ruff.lint.pylint]
 max-statements = 130
-
-[tool.ruff.lint.flake8-quotes]
-inline-quotes = 'single'
