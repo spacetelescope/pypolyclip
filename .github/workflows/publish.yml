@@ -12,7 +12,7 @@ on:
       - labeled
   push:
     branches:
-      - '*'
+      - 'main'
     tags:
       - '*'
       - '!*dev*'
@@ -50,17 +50,17 @@ jobs:
       test_command: pytest -p no:warnings --pyargs pypolyclip
       targets: |
         # Linux wheels
-        - cp*-manylinux_x86_64
+        - cp3*-manylinux_x86_64
         - target: cp3*-manylinux_aarch64
           runs-on: ubuntu-24.04-arm
 
         # MacOS X wheels
-        - cp*-macosx_x86_64
-        - cp*-macosx_arm64
+        - cp3*-macosx_x86_64
+        - cp3*-macosx_arm64
 
         # Windows wheels
-        - cp*-win_amd64
-        - cp*-win_arm64
+        - cp3*-win_amd64
+        - cp3*-win_arm64
 
   upload:
     # This job publishes the built wheels to PyPI for all tags, except
