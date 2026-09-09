@@ -2,10 +2,9 @@
 """
 Tests for the pypolyclip module.
 """
-import matplotlib.pyplot as plt
+
 import numpy as np
 import pytest
-from matplotlib.patches import Polygon
 
 from pypolyclip import clip_multi, clip_single
 
@@ -423,6 +422,10 @@ def _plot(px, py, xc, yc, areas, slices, *, seed=0, alpha=0.2, filename=None,
     filename : str, optional
        a name to output a file.  Default is None (ie no file written)
     """
+    # Optional dependency for plotting
+    import matplotlib.pyplot as plt  # noqa: PLC0415
+    from matplotlib.patches import Polygon  # noqa: PLC0415
+
     # initialize the Random seed
     rng = np.random.default_rng(seed)
 
