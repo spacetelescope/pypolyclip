@@ -4,6 +4,8 @@
 General
 ^^^^^^^
 
+- The minimum required Python is now 3.12. [#74]
+
 New Features
 ^^^^^^^^^^^^
 
