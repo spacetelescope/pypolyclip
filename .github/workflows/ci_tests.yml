@@ -45,7 +45,6 @@ jobs:
           - os: ubuntu-latest
             python: '3.14'
             tox_env: 'py314-test-cov'
-            toxposargs: --remote-data=any
             allow_failure: false
             prefix: ''
 
