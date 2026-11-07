@@ -296,7 +296,8 @@ def test_clip_single_outpolygons():
     assert all(np.allclose(y1, y2) for y1, y2 in zip(yout, ye, strict=False))
 
 
-def test_clip_threads():
+@pytest.mark.parametrize('clip_func', ['single', 'multi'])
+def test_clip_threads(clip_func):
     """
     Test that concurrent calls from several threads give the same
     results as serial calls.
@@ -305,26 +306,31 @@ def test_clip_threads():
     nthreads = 8
     ncalls = 50
 
+    def clip(px, py):
+        if clip_func == 'single':
+            return clip_single(px, py, naxis)[:3]
+        return clip_multi([px], [py], naxis)[:3]
+
     # Give each thread a different star polygon so that a thread
     # reading another thread's clipping state gives wrong results.
     polygons = [_polygon(-5, radius=3 + i, theta0=10 * i,
                          x0=40.3 + i, y0=50.7 - i)
                 for i in range(nthreads)]
-    expected = [clip_single(px, py, naxis) for px, py in polygons]
+    expected = [clip(px, py) for px, py in polygons]
 
     barrier = threading.Barrier(nthreads)
 
     def worker(index):
         px, py = polygons[index]
         barrier.wait()
-        return [clip_single(px, py, naxis) for _ in range(ncalls)]
+        return [clip(px, py) for _ in range(ncalls)]
 
     with ThreadPoolExecutor(max_workers=nthreads) as executor:
         results = list(executor.map(worker, range(nthreads)))
 
     for index, thread_results in enumerate(results):
-        xc0, yc0, area0, _ = expected[index]
-        for xc, yc, area, _ in thread_results:
+        xc0, yc0, area0 = expected[index]
+        for xc, yc, area in thread_results:
             assert_array_equal(xc, xc0)
             assert_array_equal(yc, yc0)
             assert_array_equal(area, area0)
