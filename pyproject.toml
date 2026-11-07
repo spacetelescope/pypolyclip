@@ -83,9 +83,11 @@ omit = [
     'pypolyclip/tests/*',
     'pypolyclip/*/tests/*',
     'pypolyclip/version*',
+    'pypolyclip/setup_package.py',
     '*/pypolyclip/tests/*',
     '*/pypolyclip/*/tests/*',
     '*/pypolyclip/version*',
+    '*/pypolyclip/setup_package.py',
 ]
 
 [tool.coverage.report]
