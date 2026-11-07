@@ -6,11 +6,21 @@ General
 
 - The minimum required Python is now 3.12. [#74]
 
+- The C extension is now built with ``extension-helpers``, and
+  ``setup.py`` was removed. [#78]
+
 New Features
 ^^^^^^^^^^^^
 
+- Added support for free-threaded Python builds. The C extension can
+  now be called concurrently from multiple threads without the GIL.
+  [#78]
+
 Bug Fixes
 ^^^^^^^^^
+
+- Fixed a use-after-free memory bug in the C extension, which released
+  the converted input and output arrays before using their data. [#78]
 
 API Changes
 ^^^^^^^^^^^

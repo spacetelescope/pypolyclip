@@ -40,11 +40,15 @@ plot = [
 
 [build-system]
 requires = [
+    'extension-helpers>=1.4,<2',
     'numpy>=2.0',
     'setuptools>=77.0.1',
     'setuptools_scm>=8.2',
 ]
 build-backend = 'setuptools.build_meta'
+
+[tool.extension-helpers]
+use_extension_helpers = true
 
 [tool.setuptools_scm]
 write_to = 'pypolyclip/version.py'
@@ -79,9 +83,11 @@ omit = [
     'pypolyclip/tests/*',
     'pypolyclip/*/tests/*',
     'pypolyclip/version*',
+    'pypolyclip/setup_package.py',
     '*/pypolyclip/tests/*',
     '*/pypolyclip/*/tests/*',
     '*/pypolyclip/version*',
+    '*/pypolyclip/setup_package.py',
 ]
 
 [tool.coverage.report]
@@ -115,8 +121,10 @@ force-exclude = """
 skips = ['*_test.py', '*/test_*.py']
 
 [tool.cibuildwheel]
-# Explicitly skip free-threaded builds
+# Explicitly skip free-threaded builds. Free-threaded Python does not
+# support the limited API that the environment below selects.
 skip = ["cp*t-*"]
+environment = { EXTENSION_HELPERS_PY_LIMITED_API = "cp312" }
 
 [tool.repo-review]
 ignore = [
@@ -196,6 +204,3 @@ convention = 'numpy'
 
 [tool.ruff.lint.pylint]
 max-statements = 130
-
-[tool.distutils.bdist_wheel]
-py-limited-api = "cp312"
