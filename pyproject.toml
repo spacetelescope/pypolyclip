@@ -33,9 +33,14 @@ Homepage = 'https://github.com/spacetelescope/pypolyclip'
 [project.optional-dependencies]
 test = [
     'pytest>=8.0',
+    'tox>=4.24',
 ]
 plot = [
     'matplotlib>=3.10',
+]
+dev = [
+    'pypolyclip[plot,test]',
+    'pre-commit>=4.0',
 ]
 
 [build-system]

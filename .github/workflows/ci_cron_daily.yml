@@ -19,11 +19,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TOXARGS: '-v'
-
 permissions:
   contents: read
+
+env:
+  TOXARGS: '-v'
 
 jobs:
   tests:
