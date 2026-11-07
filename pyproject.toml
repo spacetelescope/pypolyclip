@@ -40,11 +40,15 @@ plot = [
 
 [build-system]
 requires = [
+    'extension-helpers>=1.4,<2',
     'numpy>=2.0',
     'setuptools>=77.0.1',
     'setuptools_scm>=8.2',
 ]
 build-backend = 'setuptools.build_meta'
+
+[tool.extension-helpers]
+use_extension_helpers = true
 
 [tool.setuptools_scm]
 write_to = 'pypolyclip/version.py'

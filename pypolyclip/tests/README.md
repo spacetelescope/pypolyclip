@@ -5,7 +5,8 @@ coverage was unable to be successfully configured in the same way. To run the
 C coverage check locally, use the following steps (all commands should be executed
 from your bash shell in the root `pypolyclip` directory):
 
-1. Make sure that the [test] dependencies are installed (`pip install .[test]`).
+1. Make sure that the [test] dependencies and the build dependencies are
+   installed (`pip install .[test] extension-helpers setuptools_scm`).
 2. Run the following preparatory commands:
 
    export CFLAGS="--coverage"\
@@ -15,7 +16,7 @@ from your bash shell in the root `pypolyclip` directory):
 
 3. Rebuild the pypolyclip C extension:
 
-   python setup.py build_ext --inplace --force
+   python -c 'from setuptools import setup; setup()' build_ext --inplace --force
 
 4. Run the python tests (`pytest`).
 
