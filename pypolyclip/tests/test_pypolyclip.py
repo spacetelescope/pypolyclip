@@ -296,6 +296,35 @@ def test_clip_single_outpolygons():
     assert all(np.allclose(y1, y2) for y1, y2 in zip(yout, ye, strict=False))
 
 
+@pytest.mark.parametrize('dtype', [np.float32, np.float64])
+def test_clip_noncontiguous_input(dtype):
+    """
+    Test that non-contiguous input vertices give the same results as
+    contiguous input vertices.
+    """
+    naxis = (100, 100)
+    px, py = _polygon(-5, radius=3, x0=40.3, y0=50.7)
+    px = np.asarray(px, dtype=dtype)
+    py = np.asarray(py, dtype=dtype)
+
+    # Interleave the vertices with padding to make strided views
+    pxs = np.repeat(px, 2)[::2]
+    pys = np.repeat(py, 2)[::2]
+    assert not pxs.flags.c_contiguous
+
+    for result, expected in zip(clip_single(pxs, pys, naxis),
+                                clip_single(px, py, naxis), strict=True):
+        assert_array_equal(result, expected)
+
+    xx, yy, areas, _ = clip_multi(pxs[np.newaxis, :], pys[np.newaxis, :],
+                                  naxis)
+    xx0, yy0, areas0, _ = clip_multi(px[np.newaxis, :], py[np.newaxis, :],
+                                     naxis)
+    assert_array_equal(xx, xx0)
+    assert_array_equal(yy, yy0)
+    assert_array_equal(areas, areas0)
+
+
 @pytest.mark.parametrize('clip_func', ['single', 'multi'])
 def test_clip_threads(clip_func):
     """

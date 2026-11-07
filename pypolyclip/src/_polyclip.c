@@ -24,166 +24,115 @@ AUTHOR:
 
 
 
-/* Release an array from PyArray_FROM_OTF. When the array is a writeback
-   copy of an output argument, copy its data back to the original array if
-   the call succeeded, otherwise discard it. Return 0 on success and -1 if
-   the copy back failed, in which case a Python exception is set. */
-static int release_array(PyObject *arr, int writeback){
-  int status=0;
-  if (arr == NULL) return 0;
-  if (writeback) {
-    status=PyArray_ResolveWritebackIfCopy((PyArrayObject*)arr);
-  } else {
-    PyArray_DiscardWritebackIfCopy((PyArrayObject*)arr);
+/* Check that an argument is an aligned, C-contiguous array of the given
+   type in native byte order, and that it is writeable if it is an output.
+   Return 1 if it is. Otherwise set an exception and return 0. */
+static int check_array(PyArrayObject *arr,int typenum,int output,const char *name){
+  if (!PyArray_EquivTypenums(PyArray_TYPE(arr),typenum)) {
+    PyErr_Format(PyExc_TypeError,"%s must have dtype %s",name,
+                 typenum == NPY_FLOAT32 ? "float32" : "int32");
+    return 0;
   }
-  Py_DECREF(arr);
-  return status < 0 ? -1 : 0;
+  if (!PyArray_IS_C_CONTIGUOUS(arr) || !PyArray_ISBEHAVED_RO(arr)) {
+    PyErr_Format(PyExc_ValueError,
+                 "%s must be an aligned, C-contiguous array in native byte order",
+                 name);
+    return 0;
+  }
+  if (output && PyArray_FailUnlessWriteable(arr,name) < 0) return 0;
+  return 1;
 }
 
 
 static PyObject *py_multi(PyObject *self,PyObject *args){
-  /* Function to link to the polyclip_multi function */
+  /* Function to link to the polyclip_multi function. The arrays are
+     borrowed from args, which keeps them alive during the call. */
+  PyArrayObject *larr,*rarr,*barr,*tarr,*pxarr,*pyarr;
+  PyArrayObject *poly_indsarr,*xxarr,*yyarr,*nclip_polyarr,*areasarr;
+  int n_poly;
 
-  /* Create objects from the inputs */
-  PyObject *lobj,*robj,*bobj,*tobj,*pxobj,*pyobj;
-  PyObject *n_polyobj,*poly_indsobj,*xxobj,*yyobj,*nclip_polyobj,*areasobj;
-  if (!PyArg_ParseTuple(args, "OOOOOOOOOOOO",&lobj,&robj,&bobj,&tobj,&pxobj,&pyobj,&n_polyobj,&poly_indsobj,&xxobj,&yyobj,&nclip_polyobj,&areasobj)){
+  if (!PyArg_ParseTuple(args,"O!O!O!O!O!O!iO!O!O!O!O!",
+                        &PyArray_Type,&larr,&PyArray_Type,&rarr,
+                        &PyArray_Type,&barr,&PyArray_Type,&tarr,
+                        &PyArray_Type,&pxarr,&PyArray_Type,&pyarr,&n_poly,
+                        &PyArray_Type,&poly_indsarr,&PyArray_Type,&xxarr,
+                        &PyArray_Type,&yyarr,&PyArray_Type,&nclip_polyarr,
+                        &PyArray_Type,&areasarr)){
     return NULL;
   }
 
-  PyObject *larr=NULL,*rarr=NULL,*barr=NULL,*tarr=NULL,*pxarr=NULL,*pyarr=NULL;
-  PyObject *n_polyarr=NULL,*poly_indsarr=NULL,*xxarr=NULL,*yyarr=NULL;
-  PyObject *nclip_polyarr=NULL,*areasarr=NULL;
-  int *l,*r,*b,*t,*n_poly,*poly_inds,*xx,*yy,*nclip_poly;
-  float *px,*py,*areas;
-  int ok=0;
-
-  /* if arrays, then extract them to objects. The output arrays are
-     converted with writeback so that results always reach the caller. */
-  if ((larr=PyArray_FROM_OTF(lobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((rarr=PyArray_FROM_OTF(robj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((barr=PyArray_FROM_OTF(bobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((tarr=PyArray_FROM_OTF(tobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((pxarr=PyArray_FROM_OTF(pxobj,NPY_FLOAT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((pyarr=PyArray_FROM_OTF(pyobj,NPY_FLOAT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((n_polyarr=PyArray_FROM_OTF(n_polyobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((poly_indsarr=PyArray_FROM_OTF(poly_indsobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((xxarr=PyArray_FROM_OTF(xxobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((yyarr=PyArray_FROM_OTF(yyobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((nclip_polyarr=PyArray_FROM_OTF(nclip_polyobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((areasarr=PyArray_FROM_OTF(areasobj,NPY_FLOAT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-
-  /* extract the array data to a C variable */
-  l=(int*)PyArray_DATA((PyArrayObject*)larr);
-  r=(int*)PyArray_DATA((PyArrayObject*)rarr);
-  b=(int*)PyArray_DATA((PyArrayObject*)barr);
-  t=(int*)PyArray_DATA((PyArrayObject*)tarr);
-  px=(float*)PyArray_DATA((PyArrayObject*)pxarr);
-  py=(float*)PyArray_DATA((PyArrayObject*)pyarr);
-  n_poly=(int*)PyArray_DATA((PyArrayObject*)n_polyarr);
-  poly_inds=(int*)PyArray_DATA((PyArrayObject*)poly_indsarr);
-  xx=(int*)PyArray_DATA((PyArrayObject*)xxarr);
-  yy=(int*)PyArray_DATA((PyArrayObject*)yyarr);
-  nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
-  areas=(float*)PyArray_DATA((PyArrayObject*)areasarr);
+  if (!check_array(larr,NPY_INT32,0,"l") ||
+      !check_array(rarr,NPY_INT32,0,"r") ||
+      !check_array(barr,NPY_INT32,0,"b") ||
+      !check_array(tarr,NPY_INT32,0,"t") ||
+      !check_array(pxarr,NPY_FLOAT32,0,"px") ||
+      !check_array(pyarr,NPY_FLOAT32,0,"py") ||
+      !check_array(poly_indsarr,NPY_INT32,1,"poly_inds") ||
+      !check_array(xxarr,NPY_INT32,1,"xx") ||
+      !check_array(yyarr,NPY_INT32,1,"yy") ||
+      !check_array(nclip_polyarr,NPY_INT32,1,"nclip_poly") ||
+      !check_array(areasarr,NPY_FLOAT32,1,"areas")) {
+    return NULL;
+  }
 
   /* call function */
-  polyclip_multi(l,r,b,t,px,py,n_poly[0],poly_inds,xx,yy,nclip_poly,areas);
-  ok=1;
+  polyclip_multi((int*)PyArray_DATA(larr),(int*)PyArray_DATA(rarr),
+                 (int*)PyArray_DATA(barr),(int*)PyArray_DATA(tarr),
+                 (float*)PyArray_DATA(pxarr),(float*)PyArray_DATA(pyarr),
+                 n_poly,(int*)PyArray_DATA(poly_indsarr),
+                 (int*)PyArray_DATA(xxarr),(int*)PyArray_DATA(yyarr),
+                 (int*)PyArray_DATA(nclip_polyarr),
+                 (float*)PyArray_DATA(areasarr));
 
- cleanup:
-  /* clean up memory */
-  Py_XDECREF(larr);
-  Py_XDECREF(rarr);
-  Py_XDECREF(barr);
-  Py_XDECREF(tarr);
-  Py_XDECREF(pxarr);
-  Py_XDECREF(pyarr);
-  Py_XDECREF(n_polyarr);
-  if (release_array(poly_indsarr,ok) < 0) ok=0;
-  if (release_array(xxarr,ok) < 0) ok=0;
-  if (release_array(yyarr,ok) < 0) ok=0;
-  if (release_array(nclip_polyarr,ok) < 0) ok=0;
-  if (release_array(areasarr,ok) < 0) ok=0;
-
-  if (!ok) return NULL;
   Py_RETURN_NONE;
 }
 
 
 static PyObject *py_single(PyObject *self,PyObject *args){
-  /* Function to link to the polyclip_single function */
+  /* Function to link to the polyclip_single function. The arrays are
+     borrowed from args, which keeps them alive during the call. */
+  PyArrayObject *larr,*rarr,*barr,*tarr,*pxarr,*pyarr,*nvertsarr;
+  PyArrayObject *px_outarr,*py_outarr,*indsarr,*nclip_polyarr,*areasarr;
+  PyArrayObject *ri_outarr;
 
-  /* Create objects from the inputs */
-  PyObject *lobj,*robj,*bobj,*tobj,*nvertsobj;
-  PyObject *pxobj,*pyobj,*px_outobj,*py_outobj,*areasobj;
-  PyObject *indsobj,*nclip_polyobj,*ri_outobj;
-
-  if(!PyArg_ParseTuple(args,"OOOOOOOOOOOOO",&lobj,&robj,&bobj,&tobj,&pxobj,&pyobj,&nvertsobj,&px_outobj,&py_outobj,&indsobj,&nclip_polyobj,&areasobj,&ri_outobj)){
+  if (!PyArg_ParseTuple(args,"O!O!O!O!O!O!O!O!O!O!O!O!O!",
+                        &PyArray_Type,&larr,&PyArray_Type,&rarr,
+                        &PyArray_Type,&barr,&PyArray_Type,&tarr,
+                        &PyArray_Type,&pxarr,&PyArray_Type,&pyarr,
+                        &PyArray_Type,&nvertsarr,&PyArray_Type,&px_outarr,
+                        &PyArray_Type,&py_outarr,&PyArray_Type,&indsarr,
+                        &PyArray_Type,&nclip_polyarr,&PyArray_Type,&areasarr,
+                        &PyArray_Type,&ri_outarr)){
     return NULL;
   }
 
-  PyObject *larr=NULL,*rarr=NULL,*barr=NULL,*tarr=NULL,*nvertsarr=NULL;
-  PyObject *pxarr=NULL,*pyarr=NULL,*px_outarr=NULL,*py_outarr=NULL;
-  PyObject *areasarr=NULL,*indsarr=NULL,*nclip_polyarr=NULL,*ri_outarr=NULL;
-  int *l,*r,*b,*t,*nverts,*inds,*nclip_poly,*ri_out;
-  float *px,*py,*px_out,*py_out,*areas;
-  int n,ok=0;
-
-  /* if arrays, then extract them to objects. The output arrays are
-     converted with writeback so that results always reach the caller. */
-  if ((larr=PyArray_FROM_OTF(lobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((rarr=PyArray_FROM_OTF(robj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((barr=PyArray_FROM_OTF(bobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((tarr=PyArray_FROM_OTF(tobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((nvertsarr=PyArray_FROM_OTF(nvertsobj,NPY_INT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((pxarr=PyArray_FROM_OTF(pxobj,NPY_FLOAT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((pyarr=PyArray_FROM_OTF(pyobj,NPY_FLOAT32,NPY_ARRAY_IN_ARRAY)) == NULL) goto cleanup;
-  if ((px_outarr=PyArray_FROM_OTF(px_outobj,NPY_FLOAT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((py_outarr=PyArray_FROM_OTF(py_outobj,NPY_FLOAT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((areasarr=PyArray_FROM_OTF(areasobj,NPY_FLOAT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((indsarr=PyArray_FROM_OTF(indsobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((nclip_polyarr=PyArray_FROM_OTF(nclip_polyobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-  if ((ri_outarr=PyArray_FROM_OTF(ri_outobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
-
-  /* extract the array data to a C variable */
-  l=(int*)PyArray_DATA((PyArrayObject*)larr);
-  r=(int*)PyArray_DATA((PyArrayObject*)rarr);
-  b=(int*)PyArray_DATA((PyArrayObject*)barr);
-  t=(int*)PyArray_DATA((PyArrayObject*)tarr);
-  nverts=(int*)PyArray_DATA((PyArrayObject*)nvertsarr);
-  px=(float*)PyArray_DATA((PyArrayObject*)pxarr);
-  py=(float*)PyArray_DATA((PyArrayObject*)pyarr);
-  px_out=(float*)PyArray_DATA((PyArrayObject*)px_outarr);
-  py_out=(float*)PyArray_DATA((PyArrayObject*)py_outarr);
-  areas=(float*)PyArray_DATA((PyArrayObject*)areasarr);
-  inds=(int*)PyArray_DATA((PyArrayObject*)indsarr);
-  nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
-  ri_out=(int*)PyArray_DATA((PyArrayObject*)ri_outarr);
+  if (!check_array(larr,NPY_INT32,0,"l") ||
+      !check_array(rarr,NPY_INT32,0,"r") ||
+      !check_array(barr,NPY_INT32,0,"b") ||
+      !check_array(tarr,NPY_INT32,0,"t") ||
+      !check_array(pxarr,NPY_FLOAT32,0,"px") ||
+      !check_array(pyarr,NPY_FLOAT32,0,"py") ||
+      !check_array(nvertsarr,NPY_INT32,0,"nverts") ||
+      !check_array(px_outarr,NPY_FLOAT32,1,"px_out") ||
+      !check_array(py_outarr,NPY_FLOAT32,1,"py_out") ||
+      !check_array(indsarr,NPY_INT32,1,"inds") ||
+      !check_array(nclip_polyarr,NPY_INT32,1,"nclip_poly") ||
+      !check_array(areasarr,NPY_FLOAT32,1,"areas") ||
+      !check_array(ri_outarr,NPY_INT32,1,"ri_out")) {
+    return NULL;
+  }
 
   /* call function */
-  n=nclip_poly[0];
-  polyclip_single(l[0],r[0],b[0],t[0],px,py,nverts[0],inds,&n,areas,px_out,py_out,ri_out);
-  nclip_poly[0]=n;
-  ok=1;
+  polyclip_single(*(int*)PyArray_DATA(larr),*(int*)PyArray_DATA(rarr),
+                  *(int*)PyArray_DATA(barr),*(int*)PyArray_DATA(tarr),
+                  (float*)PyArray_DATA(pxarr),(float*)PyArray_DATA(pyarr),
+                  *(int*)PyArray_DATA(nvertsarr),(int*)PyArray_DATA(indsarr),
+                  (int*)PyArray_DATA(nclip_polyarr),
+                  (float*)PyArray_DATA(areasarr),
+                  (float*)PyArray_DATA(px_outarr),
+                  (float*)PyArray_DATA(py_outarr),
+                  (int*)PyArray_DATA(ri_outarr));
 
- cleanup:
-  /* clean up memory */
-  Py_XDECREF(larr);
-  Py_XDECREF(rarr);
-  Py_XDECREF(barr);
-  Py_XDECREF(tarr);
-  Py_XDECREF(nvertsarr);
-  Py_XDECREF(pxarr);
-  Py_XDECREF(pyarr);
-  if (release_array(px_outarr,ok) < 0) ok=0;
-  if (release_array(py_outarr,ok) < 0) ok=0;
-  if (release_array(areasarr,ok) < 0) ok=0;
-  if (release_array(indsarr,ok) < 0) ok=0;
-  if (release_array(nclip_polyarr,ok) < 0) ok=0;
-  if (release_array(ri_outarr,ok) < 0) ok=0;
-
-  if (!ok) return NULL;
   Py_RETURN_NONE;
 }
 

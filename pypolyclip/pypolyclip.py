@@ -228,8 +228,8 @@ def clip_single(x, y, nxy, *, return_polygons=False):
 
     # call the polygon clipper
     polyclip.single(l, r, b, t,
-                    np.asarray(x, dtype=FLT),
-                    np.asarray(y, dtype=FLT),
+                    np.ascontiguousarray(x, dtype=FLT),
+                    np.ascontiguousarray(y, dtype=FLT),
                     nverts, px_out, py_out, inds, nclip, areas, ri_out)
 
     # extract data
