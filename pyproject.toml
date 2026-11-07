@@ -121,7 +121,8 @@ force-exclude = """
 skips = ['*_test.py', '*/test_*.py']
 
 [tool.cibuildwheel]
-# Explicitly skip free-threaded builds
+# Explicitly skip free-threaded builds. Free-threaded Python does not
+# support the limited API that the environment below selects.
 skip = ["cp*t-*"]
 environment = { EXTENSION_HELPERS_PY_LIMITED_API = "cp312" }
 

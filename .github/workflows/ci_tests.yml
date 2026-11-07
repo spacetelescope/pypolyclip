@@ -54,6 +54,12 @@ jobs:
             allow_failure: false
             prefix: ''
 
+          - os: ubuntu-latest
+            python: '3.14t'
+            tox_env: 'py314t-test'
+            allow_failure: false
+            prefix: ''
+
           - os: macos-latest
             python: '3.14'
             tox_env: 'py314-test'
