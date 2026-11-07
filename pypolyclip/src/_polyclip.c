@@ -26,19 +26,22 @@ AUTHOR:
 
 /* Release an array from PyArray_FROM_OTF. When the array is a writeback
    copy of an output argument, copy its data back to the original array if
-   the call succeeded, otherwise discard it. */
-static void _release(PyObject *arr, int writeback){
-  if (arr == NULL) return;
+   the call succeeded, otherwise discard it. Return 0 on success and -1 if
+   the copy back failed, in which case a Python exception is set. */
+static int release_array(PyObject *arr, int writeback){
+  int status=0;
+  if (arr == NULL) return 0;
   if (writeback) {
-    PyArray_ResolveWritebackIfCopy((PyArrayObject*)arr);
+    status=PyArray_ResolveWritebackIfCopy((PyArrayObject*)arr);
   } else {
     PyArray_DiscardWritebackIfCopy((PyArrayObject*)arr);
   }
   Py_DECREF(arr);
+  return status < 0 ? -1 : 0;
 }
 
 
-static PyObject *_multi(PyObject *self,PyObject *args){
+static PyObject *py_multi(PyObject *self,PyObject *args){
   /* Function to link to the polyclip_multi function */
 
   /* Create objects from the inputs */
@@ -51,6 +54,8 @@ static PyObject *_multi(PyObject *self,PyObject *args){
   PyObject *larr=NULL,*rarr=NULL,*barr=NULL,*tarr=NULL,*pxarr=NULL,*pyarr=NULL;
   PyObject *n_polyarr=NULL,*poly_indsarr=NULL,*xxarr=NULL,*yyarr=NULL;
   PyObject *nclip_polyarr=NULL,*areasarr=NULL;
+  int *l,*r,*b,*t,*n_poly,*poly_inds,*xx,*yy,*nclip_poly;
+  float *px,*py,*areas;
   int ok=0;
 
   /* if arrays, then extract them to objects. The output arrays are
@@ -69,18 +74,18 @@ static PyObject *_multi(PyObject *self,PyObject *args){
   if ((areasarr=PyArray_FROM_OTF(areasobj,NPY_FLOAT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
 
   /* extract the array data to a C variable */
-  int *l = (int*)PyArray_DATA((PyArrayObject*)larr);
-  int *r = (int*)PyArray_DATA((PyArrayObject*)rarr);
-  int *b = (int*)PyArray_DATA((PyArrayObject*)barr);
-  int *t = (int*)PyArray_DATA((PyArrayObject*)tarr);
-  float *px = (float*)PyArray_DATA((PyArrayObject*)pxarr);
-  float *py = (float*)PyArray_DATA((PyArrayObject*)pyarr);
-  int *n_poly=(int*)PyArray_DATA((PyArrayObject*)n_polyarr);
-  int *poly_inds=(int*)PyArray_DATA((PyArrayObject*)poly_indsarr);
-  int *xx = (int*)PyArray_DATA((PyArrayObject*)xxarr);
-  int *yy = (int*)PyArray_DATA((PyArrayObject*)yyarr);
-  int *nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
-  float *areas = (float*)PyArray_DATA((PyArrayObject*)areasarr);
+  l=(int*)PyArray_DATA((PyArrayObject*)larr);
+  r=(int*)PyArray_DATA((PyArrayObject*)rarr);
+  b=(int*)PyArray_DATA((PyArrayObject*)barr);
+  t=(int*)PyArray_DATA((PyArrayObject*)tarr);
+  px=(float*)PyArray_DATA((PyArrayObject*)pxarr);
+  py=(float*)PyArray_DATA((PyArrayObject*)pyarr);
+  n_poly=(int*)PyArray_DATA((PyArrayObject*)n_polyarr);
+  poly_inds=(int*)PyArray_DATA((PyArrayObject*)poly_indsarr);
+  xx=(int*)PyArray_DATA((PyArrayObject*)xxarr);
+  yy=(int*)PyArray_DATA((PyArrayObject*)yyarr);
+  nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
+  areas=(float*)PyArray_DATA((PyArrayObject*)areasarr);
 
   /* call function */
   polyclip_multi(l,r,b,t,px,py,n_poly[0],poly_inds,xx,yy,nclip_poly,areas);
@@ -95,18 +100,18 @@ static PyObject *_multi(PyObject *self,PyObject *args){
   Py_XDECREF(pxarr);
   Py_XDECREF(pyarr);
   Py_XDECREF(n_polyarr);
-  _release(poly_indsarr,ok);
-  _release(xxarr,ok);
-  _release(yyarr,ok);
-  _release(nclip_polyarr,ok);
-  _release(areasarr,ok);
+  if (release_array(poly_indsarr,ok) < 0) ok=0;
+  if (release_array(xxarr,ok) < 0) ok=0;
+  if (release_array(yyarr,ok) < 0) ok=0;
+  if (release_array(nclip_polyarr,ok) < 0) ok=0;
+  if (release_array(areasarr,ok) < 0) ok=0;
 
   if (!ok) return NULL;
   Py_RETURN_NONE;
 }
 
 
-static PyObject *_single(PyObject *self,PyObject *args){
+static PyObject *py_single(PyObject *self,PyObject *args){
   /* Function to link to the polyclip_single function */
 
   /* Create objects from the inputs */
@@ -121,7 +126,9 @@ static PyObject *_single(PyObject *self,PyObject *args){
   PyObject *larr=NULL,*rarr=NULL,*barr=NULL,*tarr=NULL,*nvertsarr=NULL;
   PyObject *pxarr=NULL,*pyarr=NULL,*px_outarr=NULL,*py_outarr=NULL;
   PyObject *areasarr=NULL,*indsarr=NULL,*nclip_polyarr=NULL,*ri_outarr=NULL;
-  int ok=0;
+  int *l,*r,*b,*t,*nverts,*inds,*nclip_poly,*ri_out;
+  float *px,*py,*px_out,*py_out,*areas;
+  int n,ok=0;
 
   /* if arrays, then extract them to objects. The output arrays are
      converted with writeback so that results always reach the caller. */
@@ -140,22 +147,22 @@ static PyObject *_single(PyObject *self,PyObject *args){
   if ((ri_outarr=PyArray_FROM_OTF(ri_outobj,NPY_INT32,NPY_ARRAY_INOUT_ARRAY2)) == NULL) goto cleanup;
 
   /* extract the array data to a C variable */
-  int *l = (int*)PyArray_DATA((PyArrayObject*)larr);
-  int *r = (int*)PyArray_DATA((PyArrayObject*)rarr);
-  int *b = (int*)PyArray_DATA((PyArrayObject*)barr);
-  int *t = (int*)PyArray_DATA((PyArrayObject*)tarr);
-  int *nverts = (int*)PyArray_DATA((PyArrayObject*)nvertsarr);
-  float *px = (float*)PyArray_DATA((PyArrayObject*)pxarr);
-  float *py = (float*)PyArray_DATA((PyArrayObject*)pyarr);
-  float *px_out = (float*)PyArray_DATA((PyArrayObject*)px_outarr);
-  float *py_out = (float*)PyArray_DATA((PyArrayObject*)py_outarr);
-  float *areas=(float*)PyArray_DATA((PyArrayObject*)areasarr);
-  int *inds=(int*)PyArray_DATA((PyArrayObject*)indsarr);
-  int *nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
-  int *ri_out = (int*)PyArray_DATA((PyArrayObject*)ri_outarr);
+  l=(int*)PyArray_DATA((PyArrayObject*)larr);
+  r=(int*)PyArray_DATA((PyArrayObject*)rarr);
+  b=(int*)PyArray_DATA((PyArrayObject*)barr);
+  t=(int*)PyArray_DATA((PyArrayObject*)tarr);
+  nverts=(int*)PyArray_DATA((PyArrayObject*)nvertsarr);
+  px=(float*)PyArray_DATA((PyArrayObject*)pxarr);
+  py=(float*)PyArray_DATA((PyArrayObject*)pyarr);
+  px_out=(float*)PyArray_DATA((PyArrayObject*)px_outarr);
+  py_out=(float*)PyArray_DATA((PyArrayObject*)py_outarr);
+  areas=(float*)PyArray_DATA((PyArrayObject*)areasarr);
+  inds=(int*)PyArray_DATA((PyArrayObject*)indsarr);
+  nclip_poly=(int*)PyArray_DATA((PyArrayObject*)nclip_polyarr);
+  ri_out=(int*)PyArray_DATA((PyArrayObject*)ri_outarr);
 
   /* call function */
-  int n=nclip_poly[0];
+  n=nclip_poly[0];
   polyclip_single(l[0],r[0],b[0],t[0],px,py,nverts[0],inds,&n,areas,px_out,py_out,ri_out);
   nclip_poly[0]=n;
   ok=1;
@@ -169,12 +176,12 @@ static PyObject *_single(PyObject *self,PyObject *args){
   Py_XDECREF(nvertsarr);
   Py_XDECREF(pxarr);
   Py_XDECREF(pyarr);
-  _release(px_outarr,ok);
-  _release(py_outarr,ok);
-  _release(areasarr,ok);
-  _release(indsarr,ok);
-  _release(nclip_polyarr,ok);
-  _release(ri_outarr,ok);
+  if (release_array(px_outarr,ok) < 0) ok=0;
+  if (release_array(py_outarr,ok) < 0) ok=0;
+  if (release_array(areasarr,ok) < 0) ok=0;
+  if (release_array(indsarr,ok) < 0) ok=0;
+  if (release_array(nclip_polyarr,ok) < 0) ok=0;
+  if (release_array(ri_outarr,ok) < 0) ok=0;
 
   if (!ok) return NULL;
   Py_RETURN_NONE;
@@ -185,10 +192,8 @@ static PyObject *_single(PyObject *self,PyObject *args){
 
 /* Collection of function names */
 static PyMethodDef module_methods[]={
-  { "multi", (PyCFunction)_multi, METH_NOARGS,NULL },
-  { "multi", _multi, METH_VARARGS, "A python driver to call polyclip_multi.\nA function written by J.D. Smith\n"},
-  { "single", (PyCFunction)_single, METH_NOARGS,NULL },
-  { "single", _single, METH_VARARGS, "A python driver to call polyclip_single.\nA function written by J.D. Smith\n"},
+  { "multi", py_multi, METH_VARARGS, "A python driver to call polyclip_multi.\nA function written by J.D. Smith\n"},
+  { "single", py_single, METH_VARARGS, "A python driver to call polyclip_single.\nA function written by J.D. Smith\n"},
   { NULL, NULL, 0, NULL }
 };
 
