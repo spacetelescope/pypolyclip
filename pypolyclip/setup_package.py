@@ -2,8 +2,11 @@
 """
 Extension module definitions for pypolyclip.
 
-The limited API (stable ABI) settings are applied by extension-helpers
-from the ``py-limited-api`` option in pyproject.toml.
+Building against the limited API (stable ABI) is opt-in. When the
+``EXTENSION_HELPERS_PY_LIMITED_API`` environment variable is set (e.g.,
+to ``cp312``), extension-helpers applies the limited API settings to
+these extensions. The cibuildwheel configuration in pyproject.toml sets
+this variable, so release wheels target the limited API.
 """
 
 import os

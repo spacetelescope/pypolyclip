@@ -285,10 +285,18 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
 #define BOTTOM 3
 #define DONE 4
 
-int in_last[4], first[4]; /* Flags for first and inside, for each side */
-float *px_clip,*py_clip; /* pointers for depositing output vertices */
-float F[4][2],S[4][2],I[2];	/* Last point X, Y in poly */
-int pind;			/* Counter for accumulating output */
+/* The clipping state is thread-local so that concurrent calls from
+   different threads do not share it. */
+#if defined(_MSC_VER)
+#define POLYCLIP_TLS __declspec(thread)
+#else
+#define POLYCLIP_TLS _Thread_local
+#endif
+
+POLYCLIP_TLS int in_last[4], first[4]; /* Flags for first and inside, for each side */
+POLYCLIP_TLS float *px_clip,*py_clip; /* pointers for depositing output vertices */
+POLYCLIP_TLS float F[4][2],S[4][2],I[2];	/* Last point X, Y in poly */
+POLYCLIP_TLS int pind;			/* Counter for accumulating output */
 
 int polyclip(float *px, float *py, int n, int i, int j,
 	     float *px_out, float *py_out) {
