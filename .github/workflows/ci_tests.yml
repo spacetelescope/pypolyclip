@@ -45,7 +45,12 @@ jobs:
           - os: ubuntu-latest
             python: '3.14'
             tox_env: 'py314-test-cov'
-            toxposargs: --remote-data=any
+            allow_failure: false
+            prefix: ''
+
+          - os: ubuntu-latest
+            python: '3.15'
+            tox_env: 'py315-test'
             allow_failure: false
             prefix: ''
 
@@ -75,7 +80,7 @@ jobs:
 
           - os: ubuntu-latest
             python: '3.x'
-            tox_env: 'securityaudit'
+            tox_env: 'bandit'
             allow_failure: false
             prefix: ''
 
