@@ -285,38 +285,36 @@ void polyclip_multi(int *l,int *r, int *b, int *t,float*px,float*py,
 #define BOTTOM 3
 #define DONE 4
 
-/* The clipping state is thread-local so that concurrent calls from
-   different threads do not share it. */
-#if defined(_MSC_VER)
-#define POLYCLIP_TLS __declspec(thread)
-#else
-#define POLYCLIP_TLS _Thread_local
-#endif
-
-POLYCLIP_TLS int in_last[4], first[4]; /* Flags for first and inside, for each side */
-POLYCLIP_TLS float *px_clip,*py_clip; /* pointers for depositing output vertices */
-POLYCLIP_TLS float F[4][2],S[4][2],I[2];	/* Last point X, Y in poly */
-POLYCLIP_TLS int pind;			/* Counter for accumulating output */
+/* The clipping state for one call of polyclip. Each call keeps its own
+   state on the stack, so concurrent calls do not share it. */
+struct polyclip_state {
+  int in_last[4], first[4];  /* Flags for first and inside, for each side */
+  float *px_clip, *py_clip;  /* Pointers for depositing output vertices */
+  float F[4][2], S[4][2], I[2];  /* Last point X, Y in poly */
+  int pind;  /* Counter for accumulating output */
+};
 
 int polyclip(float *px, float *py, int n, int i, int j,
 	     float *px_out, float *py_out) {
   int l;
-  pind=0; px_clip=px_out; py_clip=py_out;
+  struct polyclip_state st;
+  struct polyclip_state *ps=&st;
+  ps->pind=0; ps->px_clip=px_out; ps->py_clip=py_out;
 
 #ifdef DEBUG
   for(l=0;l<n;l++) printf("%8.5f %8.5f\n",px[l],py[l]);
 #endif
 
-  for(l=0;l<4;l++) first[l]=1;
+  for(l=0;l<4;l++) ps->first[l]=1;
   for(l=0;l<n;l++)
-    polyclip_shclip(px[l],py[l],i,j,LEFT);
-  polyclip_shclose(i,j,LEFT);	/* close first->last */
-  return pind;
+    polyclip_shclip(ps,px[l],py[l],i,j,LEFT);
+  polyclip_shclose(ps,i,j,LEFT);	/* close first->last */
+  return ps->pind;
 }
 
 /* Reentrant Sutherland-Hodgman Clipper */
 /* Recursively clip a polygon with all 4 boundaries of pixel (i,j) */
-void polyclip_shclip(float px, float py, int i, int j, int side) {
+void polyclip_shclip(struct polyclip_state *ps, float px, float py, int i, int j, int side) {
   int in_p;
 
 #ifdef DEBUG
@@ -327,7 +325,7 @@ void polyclip_shclip(float px, float py, int i, int j, int side) {
 #endif
 
   if (side==DONE) { 			/* Done, store the point */
-    px_clip[pind]=px; py_clip[pind++]=py;
+    ps->px_clip[ps->pind]=px; ps->py_clip[ps->pind++]=py;
 #ifdef DEBUG
     printf("Added: %f %f\n",px,py);
 #endif
@@ -337,47 +335,47 @@ void polyclip_shclip(float px, float py, int i, int j, int side) {
 
   in_p=polyclip_inside(px,py,i,j,side);
 
-  if(first[side]) {
-    first[side]=0;
-    F[side][0]=px; F[side][1]=py; /* P -> F */
-  } else if(in_last[side]^in_p) {	/* Crossed -- compute intersection */
-    polyclip_intersect(px,py,i,j,side);
+  if(ps->first[side]) {
+    ps->first[side]=0;
+    ps->F[side][0]=px; ps->F[side][1]=py; /* P -> F */
+  } else if(ps->in_last[side]^in_p) {	/* Crossed -- compute intersection */
+    polyclip_intersect(ps,px,py,i,j,side);
 #ifdef DEBUG
     printf("Intersec (%4.2f,%4.2f) -> (%4.2f,%4.2f) => (%4.2f,%4.2f) %s-%s\n",
-	   S[side][0],S[side][1],px,py,I[0],I[1],in_last[side]?"in":"out",
+	   ps->S[side][0],ps->S[side][1],px,py,ps->I[0],ps->I[1],ps->in_last[side]?"in":"out",
 	   in_p?"in":"out");
 #endif
-    polyclip_shclip(I[0],I[1],i,j,side+1); /* Pass this point to the next */
+    polyclip_shclip(ps,ps->I[0],ps->I[1],i,j,side+1); /* Pass this point to the next */
   }
 
-  S[side][0]=px; S[side][1]=py;  /* P -> S */
-  in_last[side]=in_p;		 /* Save last inside flag */
-  if(in_p) polyclip_shclip(px,py,i,j,side+1);
+  ps->S[side][0]=px; ps->S[side][1]=py;  /* P -> S */
+  ps->in_last[side]=in_p;		 /* Save last inside flag */
+  if(in_p) polyclip_shclip(ps,px,py,i,j,side+1);
 }
 
-void polyclip_shclose(int i, int j, int side) {
+void polyclip_shclose(struct polyclip_state *ps, int i, int j, int side) {
 #ifdef DEBUG
   if(side<DONE)
     printf("Closing pixel %d %d (inlast: %d, F: %7.4f, %7.4f, first: %d) %s\n",
-	   i,j,in_last[side],F[side][0],F[side][1],first[side],
+	   i,j,ps->in_last[side],ps->F[side][0],ps->F[side][1],ps->first[side],
 	   (side==LEFT)?"LEFT":((side==RIGHT)?"RIGHT":
 				((side==TOP)?"TOP":"BOTTOM")));
 #endif
   if (side<DONE) {
-    if(!first[side]) {
-      if(in_last[side]^polyclip_inside(F[side][0],F[side][1],i,j,side)) {
-	polyclip_intersect(F[side][0],F[side][1],i,j,side);
+    if(!ps->first[side]) {
+      if(ps->in_last[side]^polyclip_inside(ps->F[side][0],ps->F[side][1],i,j,side)) {
+	polyclip_intersect(ps,ps->F[side][0],ps->F[side][1],i,j,side);
 
 #ifdef DEBUG
 	printf("Intersec (%4.2f,%4.2f) -> (%4.2f,%4.2f) => (%4.2f,%4.2f) last %s\n",
-	       S[side][0],S[side][1],F[side][0],F[side][1],I[0],I[1],in_last[side]?"in":"out");
+	       ps->S[side][0],ps->S[side][1],ps->F[side][0],ps->F[side][1],ps->I[0],ps->I[1],ps->in_last[side]?"in":"out");
 #endif
 
-	polyclip_shclip(I[0],I[1],i,j,side+1);
+	polyclip_shclip(ps,ps->I[0],ps->I[1],i,j,side+1);
       }
-      first[side]=1;
+      ps->first[side]=1;
     }
-    polyclip_shclose(i,j,side+1);
+    polyclip_shclose(ps,i,j,side+1);
   }
 }
 
@@ -395,23 +393,23 @@ int polyclip_inside(float px, float py, int i, int j, int side) {
   return -1;
 }
 
-void polyclip_intersect(float px, float py,int i, int j, int side) {
+void polyclip_intersect(struct polyclip_state *ps, float px, float py,int i, int j, int side) {
   switch(side) {
   case LEFT:
-    I[0]=i;
-    I[1]=S[side][1]+(py-S[side][1])/(px-S[side][0])*(i-S[side][0]);
+    ps->I[0]=i;
+    ps->I[1]=ps->S[side][1]+(py-ps->S[side][1])/(px-ps->S[side][0])*(i-ps->S[side][0]);
     break;
   case RIGHT:
-    I[0]=i+1;
-    I[1]=S[side][1]+(py-S[side][1])/(px-S[side][0])*(i+1-S[side][0]);
+    ps->I[0]=i+1;
+    ps->I[1]=ps->S[side][1]+(py-ps->S[side][1])/(px-ps->S[side][0])*(i+1-ps->S[side][0]);
     break;
   case TOP:
-    I[0]=S[side][0]+(px-S[side][0])/(py-S[side][1])*(j+1-S[side][1]);
-    I[1]=j+1;
+    ps->I[0]=ps->S[side][0]+(px-ps->S[side][0])/(py-ps->S[side][1])*(j+1-ps->S[side][1]);
+    ps->I[1]=j+1;
     break;
   case BOTTOM:
-    I[0]=S[side][0]+(px-S[side][0])/(py-S[side][1])*(j-S[side][1]);
-    I[1]=j;
+    ps->I[0]=ps->S[side][0]+(px-ps->S[side][0])/(py-ps->S[side][1])*(j-ps->S[side][1]);
+    ps->I[1]=j;
     break;
   }
 }

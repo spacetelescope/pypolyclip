@@ -164,8 +164,8 @@ PyMODINIT_FUNC PyInit_polyclip(void)
   import_array();
   PyObject *module = PyModule_Create(&_polyclip);
 #if defined(Py_GIL_DISABLED) && !defined(Py_LIMITED_API)
-  /* The clipping state in polyclip.c is thread-local, so the module
-     can run without the GIL on free-threaded builds. */
+  /* Each call in polyclip.c keeps its clipping state on its own stack,
+     so the module can run without the GIL on free-threaded builds. */
   if (module != NULL && PyUnstable_Module_SetGIL(module, Py_MOD_GIL_NOT_USED) < 0) {
     Py_DECREF(module);
     return NULL;

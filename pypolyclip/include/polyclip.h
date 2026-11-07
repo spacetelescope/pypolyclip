@@ -16,10 +16,11 @@
 #define POLYCLIP_H
 
 int  polyclip(float *,float *, int, int, int, float *, float *);
-void  polyclip_shclip(float, float, int, int, int);
-void polyclip_shclose(int, int, int);
+struct polyclip_state;
+void  polyclip_shclip(struct polyclip_state *, float, float, int, int, int);
+void polyclip_shclose(struct polyclip_state *, int, int, int);
 int  polyclip_inside(float, float, int, int, int);
-void polyclip_intersect(float, float, int, int, int);
+void polyclip_intersect(struct polyclip_state *, float, float, int, int, int);
 float polyclip_area(float *,float *, int );
 char polyclip_test(void);
 void polyclip_multi(int*,int*,int*,int*,float*,float*,int,int*,int*,int*,int*,float*);
