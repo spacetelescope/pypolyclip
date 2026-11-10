@@ -18,8 +18,10 @@ classifiers = [
     'Intended Audience :: Science/Research',
     'Natural Language :: English',
     'Operating System :: OS Independent',
+    'Programming Language :: C',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: Free Threading :: 2 - Beta',
     'Topic :: Scientific/Engineering :: Astronomy',
 ]
 dynamic = ['version']
@@ -125,10 +127,17 @@ force-exclude = """
 skips = ['*_test.py', '*/test_*.py']
 
 [tool.cibuildwheel]
-# Explicitly skip free-threaded builds. Free-threaded Python does not
-# support the limited API that the environment below selects.
-skip = ["cp*t-*"]
+# Build a single limited API (abi3) wheel per platform that supports
+# Python 3.12 and later.
 environment = { EXTENSION_HELPERS_PY_LIMITED_API = "cp312" }
+
+[[tool.cibuildwheel.overrides]]
+# Free-threaded Python does not support the limited API, so build
+# version-specific wheels for it. An empty value turns off the limited
+# API in extension-helpers. This override replaces the environment
+# above instead of adding to it.
+select = "cp3??t-*"
+environment = { EXTENSION_HELPERS_PY_LIMITED_API = "" }
 
 [tool.repo-review]
 ignore = [
