@@ -27,7 +27,7 @@ authors:
     orcid: "https://orcid.org/0000-0002-4206-6492"
 
 title: "pypolyclip"
-version: 1.0.0
-doi:
-date-released:
+version: 1.2.0
+doi: 10.5281/zenodo.10076768
+date-released: '2026-01-20'
 url: https://github.com/spacetelescope/pypolyclip
