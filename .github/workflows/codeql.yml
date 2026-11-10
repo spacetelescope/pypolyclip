@@ -16,15 +16,20 @@ permissions:
 
 jobs:
   analyze:
-    # Keep this name, which matches the check name of the former
-    # single-language matrix job
-    name: Analyze (python)
+    # Keep this name pattern so that the Python check keeps its
+    # existing name, "Analyze (python)".
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       actions: read
       contents: read
       security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both languages are analyzed from source without a build.
+        language: [c-cpp, python]
 
     steps:
       - name: Check out repository
@@ -34,9 +39,9 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
-          languages: python
+          languages: ${{ matrix.language }}
           build-mode: none
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
-          category: '/language:python'
+          category: '/language:${{ matrix.language }}'
