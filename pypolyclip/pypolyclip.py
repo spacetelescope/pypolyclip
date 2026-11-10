@@ -79,7 +79,8 @@ def clip_multi(x, y, nxy):
         # if here, then the inputs are numpy arrays, and so the polygons
         # all have the same number of vertices.  Therefore, we can use
         # numpy operations to do many calculations
-        l = np.clip(np.floor(np.amin(x, axis=1)), 0, nxy[0]).astype(INT)  # noqa: E741
+        l = np.clip(np.floor(np.amin(x, axis=1)), 0,  # noqa: E741
+                    nxy[0]).astype(INT)
         r = np.clip(np.floor(np.amax(x, axis=1)), 0, nxy[0]).astype(INT)
         b = np.clip(np.floor(np.amin(y, axis=1)), 0, nxy[1]).astype(INT)
         t = np.clip(np.floor(np.amax(y, axis=1)), 0, nxy[1]).astype(INT)
@@ -202,7 +203,8 @@ def clip_single(x, y, nxy, *, return_polygons=False):
     number of input polygons.
     """
     # compute bounding box for the pixel
-    l = np.asarray(np.clip(np.floor(np.amin(x)), 0, nxy[0]), dtype=INT)  # noqa: E741
+    l = np.asarray(np.clip(np.floor(np.amin(x)), 0, nxy[0]),  # noqa: E741
+                   dtype=INT)
     r = np.asarray(np.clip(np.floor(np.amax(x)), 0, nxy[0]), dtype=INT)
     b = np.asarray(np.clip(np.floor(np.amin(y)), 0, nxy[1]), dtype=INT)
     t = np.asarray(np.clip(np.floor(np.amax(y)), 0, nxy[1]), dtype=INT)
