@@ -11,7 +11,6 @@ keywords = [
     'computational geometry',
     'polygon clipping',
     'polygon intersection',
-    'pixelated images',
     'CUBISM',
     'polyclip',
 ]
@@ -32,8 +31,7 @@ Homepage = 'https://github.com/spacetelescope/pypolyclip'
 
 [project.optional-dependencies]
 test = [
-    'pytest>=8.0',
-    'tox>=4.24',
+    'pytest>=9.0',
 ]
 plot = [
     'matplotlib>=3.10',
@@ -41,6 +39,7 @@ plot = [
 dev = [
     'pypolyclip[plot,test]',
     'pre-commit>=4.0',
+    'tox>=4.24',
 ]
 
 [build-system]
@@ -56,7 +55,7 @@ build-backend = 'setuptools.build_meta'
 use_extension_helpers = true
 
 [tool.setuptools_scm]
-write_to = 'pypolyclip/version.py'
+version_file = 'pypolyclip/version.py'
 
 [tool.setuptools]
 zip-safe = false
@@ -65,8 +64,8 @@ include-package-data = false
 [tool.setuptools.packages.find]
 namespaces = false
 
-[tool.pytest.ini_options]
-minversion = "8.0"
+[tool.pytest]
+minversion = "9.0"
 testpaths = [
     'pypolyclip',
 ]
@@ -77,7 +76,6 @@ addopts = [
     '--strict-markers',
 ]
 log_level = 'INFO'
-log_cli_level = 'INFO'
 xfail_strict = true
 filterwarnings = [
     'error',  # turn warnings into exceptions
@@ -85,25 +83,23 @@ filterwarnings = [
 
 [tool.coverage.run]
 omit = [
-    'pypolyclip/tests/*',
-    'pypolyclip/*/tests/*',
+    'pypolyclip/__init__*',
+    'pypolyclip/**/conftest.py',
+    'pypolyclip/**/setup*',
+    'pypolyclip/**/tests/*',
     'pypolyclip/version*',
-    'pypolyclip/setup_package.py',
-    '*/pypolyclip/tests/*',
-    '*/pypolyclip/*/tests/*',
+    '*/pypolyclip/__init__*',
+    '*/pypolyclip/**/conftest.py',
+    '*/pypolyclip/**/setup*',
+    '*/pypolyclip/**/tests/*',
     '*/pypolyclip/version*',
-    '*/pypolyclip/setup_package.py',
 ]
 
 [tool.coverage.report]
 exclude_lines = [
     'pragma: no cover',
-    'except ImportError',
-    'raise AssertionError',
     'raise NotImplementedError',
     'def main\\(.*\\):',
-    'pragma: py{ignore_python_version}',
-    'def _ipython_key_completions_',
 ]
 
 [tool.isort]
@@ -116,6 +112,8 @@ known_first_party = [
 use_parentheses = true
 
 [tool.black]
+# Exclude every file so that black never reformats the code if an
+# editor or another tool runs it. This project does not use black.
 force-exclude = """
 (
   .*
@@ -157,8 +155,8 @@ checks = [
     'SS06',  # single-line summary
 ]
 
-# don't report on objects that match any of these regex;
-# remember to use single quotes for regex in TOML
+# Do not report on objects that match any of these regex.
+# Remember to use single quotes for regex in TOML.
 exclude = [
     '__init__',
     'setup',
@@ -178,7 +176,6 @@ line-length = 79
 select = ['ALL']
 ignore = [
     'ANN',  # type annotations
-    'D200',  # unnecessary-multiline-docstring
     'D205',  # missing-blank-line-after-summary
     'PLR0913',  # too-many-arguments
     'PLR0917',  # too-many-positional-arguments
