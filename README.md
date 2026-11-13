@@ -28,8 +28,8 @@ The test module
 [test_pypolyclip.py](https://github.com/spacetelescope/pypolyclip/blob/main/pypolyclip/tests/test_pypolyclip.py) can be run to produce the following
 example figures:
 
-<img src="https://raw.githubusercontent.com/larrybradley/pypolyclip/main/docs/_static/polygons.png" width="350" height="350">
-<img src="https://raw.githubusercontent.com/larrybradley/pypolyclip/main/docs/_static/quadrilaterals.png" width="350" height="350">
+<img src="https://raw.githubusercontent.com/spacetelescope/pypolyclip/main/docs/_static/polygons.png" width="350" height="350">
+<img src="https://raw.githubusercontent.com/spacetelescope/pypolyclip/main/docs/_static/quadrilaterals.png" width="350" height="350">
 
 In each figure, the Cartesian coordinates for each pixel that overlaps
 with a given polygon are labeled with the area of that pixel that is
